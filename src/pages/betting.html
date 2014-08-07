@@ -141,7 +141,7 @@
                           <div class="row">
                             <label class="col col-lg-4 control-label font-medlg">Wager:</label>
                             <div class="col col-lg-8">
-                              <input type="text"  name="wager" class="number form-control"  data-bind="value: $parent.wager, valueUpdate: 'input'" /> XCP
+                              <input type="text"  name="wager" class="number form-control"  data-bind="value: $parent.wager, valueUpdate: 'input'" /> XCH
                               <br /><span class="invalid" data-bind="validationMessage: $parent.wager"></span>
                             </div>
                           </div> 
@@ -171,9 +171,9 @@
                           <div class="row" data-bind="visible: $parent.showAdvancedOptions || ($parent.counterBets().length == 0 && $parent.operatorOdds()==false)"> 
                             <label class="col col-lg-4 control-label font-medlg">Odds:</label> 
                             <div class="col col-lg-8">                
-                              <input name="odd" class="number form-control" data-bind="value: $parent.odd, valueUpdate: 'input'" type="text"/> XCP
+                              <input name="odd" class="number form-control" data-bind="value: $parent.odd, valueUpdate: 'input'" type="text"/> XCH
                               <span class="invalid" data-bind="validationMessage: $parent.odd"></span>
-                              <br /><div class="note">how much do you want to win per 1 XCP.</div>
+                              <br /><div class="note">how much do you want to win per 1 XCH.</div>
                             </div>                      
                           </div>
                           <div class="row" data-bind="visible: info_data.type=='cfd' && $parent.showAdvancedOptions">
@@ -216,26 +216,26 @@
                               <div class="progress-bar bg-color-greenLight" data-bind="attr: {style: 'width: '+$parent.greenPercent()+'%'}"></div>
                               <div class="progress-bar bg-color-redLight" data-bind="attr: {style: 'width: '+(100-$parent.greenPercent())+'%'}"></div>
                             </div>
-                            win <span data-bind="text: $parent.odd"></span> XCP for every 1 XCP you bet 
+                            win <span data-bind="text: $parent.odd"></span> XCH for every 1 XCH you bet
                             <a data-bind="visible: operatorOdds" href="#" onclick="return false" title="The feed operator is actively managing the odds">
                               <span class="fa fa-crosshairs"></span>
                             </a>
                           </div>
                           <div>          
                             <label>Winnings:</label>
-                            <span data-bind="text: $parent.counterwager + ' XCP'"></span>  
+                            <span data-bind="text: $parent.counterwager + ' XCH'"></span>
                           </div>
                           <div>              
                             <label>Fee:</label> 
-                            <span data-bind="text: $parent.fee + ' XCP'"></span>  
+                            <span data-bind="text: $parent.fee + ' XCH'"></span>
                           </div> 
                           <div>              
                             <label>Matching:</label> 
-                            <span data-bind="text: $parent.matchingVolume + ' XCP'"></span>  
+                            <span data-bind="text: $parent.matchingVolume + ' XCH'"></span>
                           </div> 
                           <div>              
                             <label>Open:</label> 
-                            <span data-bind="text: $parent.openingVolume + ' XCP'"></span>  
+                            <span data-bind="text: $parent.openingVolume + ' XCH'"></span>
                           </div>
                         </div>
 
@@ -253,7 +253,7 @@
                             </tr>
                             <tr>
                               <td><b>Wager:</b></td>
-                              <td><b><span data-bind="text: $parent.wager + ' XCP'"></span></b></td>
+                              <td><b><span data-bind="text: $parent.wager + ' XCH'"></span></b></td>
                             </tr>
                             <tr data-bind="visible: info_data.type=='binary'">          
                               <td><b>Topic:</b></td>
@@ -270,12 +270,12 @@
                                   <div class="progress-bar bg-color-greenLight" data-bind="attr: {style: 'width: '+$parent.greenPercent()+'%'}"></div>
                                   <div class="progress-bar bg-color-redLight" data-bind="attr: {style: 'width: '+(100-$parent.greenPercent())+'%'}"></div>
                                 </div>
-                                win <span data-bind="text: $parent.odd"></span> XCP for every 1 XCP you bet 
+                                win <span data-bind="text: $parent.odd"></span> XCH for every 1 XCH you bet
                               </td>
                             </tr>
                             <tr data-bind="visible: $parent.fee>=0">              
                               <td><b>Fee:</b></td> 
-                              <td><b><span data-bind="text: $parent.fee + ' XCP'"></span></b></td>  
+                              <td><b><span data-bind="text: $parent.fee + ' XCH'"></span></b></td>
                             </tr>
                           </tbody>
                         </table>

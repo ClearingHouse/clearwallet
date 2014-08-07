@@ -389,8 +389,8 @@ function multiAPIConsensus(method, params, onSuccess, onConsensusError, onSysErr
         var endMessage = textStatus.indexOf(")", noBtcPos) + 1;
 
         message = '<b class="errorColor">' + textStatus.substr(noBtcPos, endMessage-noBtcPos)
-          + '</b>. You must have a small amount of BTC in this address to pay the Bitcoin miner fees. Please fund this address and try again.<br/><br/>'
-          + '<a href="https://www.counterparty.co/resources/faqs/why-do-i-need-small-amounts-of-bitcoin-to-do-things-in-counterwallet/" target="_blank">More information on why this is necessary.</a>';
+          + '</b>. You must have a small amount of VIA in this address to pay the Viacoin miner fees. Please fund this address and try again.<br/><br/>'
+          + '<a href="https://www.clearinghouse.io/resources/faqs/why-do-i-need-small-amounts-of-bitcoin-to-do-things-in-counterwallet/" target="_blank">More information on why this is necessary.</a>';
       
       } else {
         message = describeError(jqXHR, textStatus, errorThrown);

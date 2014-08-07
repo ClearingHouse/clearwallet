@@ -73,7 +73,7 @@ span.logoText {
     margin: 0 !important;
 }
 
-/* Make Counterwallet word invisible in black top bar for low resolution */
+/* Make Clearwallet word invisible in black top bar for low resolution */
 @media only screen and (max-width : 665px) {
   #logo span.logoText {
     display: none !important;

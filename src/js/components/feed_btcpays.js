@@ -73,18 +73,18 @@ function WaitingBTCPayViewModel(btcPayData) {
     //Pop up confirm dialog, and make BTC payment
     WALLET.retrieveBTCBalance(self.BTCPAY_DATA['myAddr'], function(balance) {
       if(balance < self.BTCPAY_DATA['btcQuantityRaw'] + MIN_PRIME_BALANCE) {
-        bootbox.alert("You do not have the required <b class='notoAssetColor'>BTC</b> balance to settle this order."
-          + " Please deposit more <b class='notoAssetColor'>BTC</b> into address"
+        bootbox.alert("You do not have the required <b class='notoAssetColor'>VIA</b> balance to settle this order."
+          + " Please deposit more <b class='notoAssetColor'>VIA</b> into address"
           + " <b class='notoAddrColor'>" + getAddressLabel(self.BTCPAY_DATA['myAddr']) + "</b> and try again.");
         return;
       }
       
       bootbox.dialog({
         message: "Confirm a payment of <b class='notoQuantityColor'>" + self.BTCPAY_DATA['btcQuantity'] + "</b>"
-          + " <b class='notoAssetColor'>BTC</b>" + " to address"
+          + " <b class='notoAssetColor'>VIA</b>" + " to address"
           + " <b class='notoAddrColor'>" + getAddressLabel(self.BTCPAY_DATA['btcDestAddr']) + "</b> to settle order ID"
           + " <b>" + self.BTCPAY_DATA['myOrderTxIndex'] + "</b>?",
-        title: "Confirm Order Settlement (BTC Payment)",
+        title: "Confirm Order Settlement (VIA Payment)",
         buttons: {
           cancel: {
             label: "Cancel",
@@ -180,8 +180,8 @@ function WaitingBTCPayFeedViewModel() {
         $.jqlog.debug("Order matches: " + JSON.stringify(data));
         for(var i=0; i < data.length; i++) {
           //if the other party is the one that should be paying BTC for this specific order match, then skip it          
-          if(   WALLET.getAddressObj(data['tx0_address']) && data['forward_asset'] == 'BTC'
-             || WALLET.getAddressObj(data['tx1_address']) && data['backward_asset'] == 'BTC')
+          if(   WALLET.getAddressObj(data['tx0_address']) && data['forward_asset'] == 'VIA'
+             || WALLET.getAddressObj(data['tx1_address']) && data['backward_asset'] == 'VIA')
              continue;
           
           //if here, we have a pending order match that we owe BTC for. 
@@ -219,8 +219,8 @@ function WaitingBTCPayFeedViewModel() {
 }
 WaitingBTCPayFeedViewModel.makeBTCPayData = function(data) {
   //data is a pending order match object (from a data feed message received, or from a get_orders API result)
-  var firstInPair = (WALLET.getAddressObj(data['tx0_address']) && data['forward_asset'] == 'BTC') ? true : false;
-  if(!firstInPair) if (!(WALLET.getAddressObj(data['tx1_address']) && data['backward_asset'] == 'BTC')) return false;
+  var firstInPair = (WALLET.getAddressObj(data['tx0_address']) && data['forward_asset'] == 'VIA') ? true : false;
+  if(!firstInPair) if (!(WALLET.getAddressObj(data['tx1_address']) && data['backward_asset'] == 'VIA')) return false;
   
   return {
     blockIndex: data['tx1_block_index'], //the latter block index, which is when the match was actually made
@@ -343,23 +343,23 @@ function UpcomingBTCPayFeedViewModel() {
     //If automatic BTC pays are enabled, just take care of the BTC pay right now
     if(PREFERENCES['auto_btcpay']) {
 
-      if(WALLET.getBalance(btcPayData['myAddr'], 'BTC', false) >= (btcPayData['btcQuantityRaw']) + MIN_PRIME_BALANCE) {
+      if(WALLET.getBalance(btcPayData['myAddr'], 'VIA', false) >= (btcPayData['btcQuantityRaw']) + MIN_PRIME_BALANCE) {
         
          //user has the sufficient balance
         WALLET.doTransaction(btcPayData['myAddr'], "create_btcpay",
           { order_match_id: btcPayData['orderMatchID'], source: btcPayData['myAddr'], destBtcPay: btcPayData['btcDestAddr'] },
           function(txHash, data, endpoint, addressType, armoryUTx) {
             //notify the user of the automatic BTC payment
-            var message = "Automatic <b class='notoAssetColor'>BTC</b> payment of "
+            var message = "Automatic <b class='notoAssetColor'>VIA</b> payment of "
               + "<b class='notoQuantityColor'>" + btcPayData['btcQuantity'] + "</b>"
-              + " <b class='notoAssetColor'>BTC</b> made from address"
+              + " <b class='notoAssetColor'>VIA</b> made from address"
               + " <b class='notoAddrColor'>" + btcPayData['myAddr'] + "</b> for"
               + " <b class='notoQuantityColor'>" + btcPayData['otherOrderQuantity'] + "</b> "
               + " <b class='notoAssetColor'>" + btcPayData['otherOrderAsset'] + "</b>. ";
             WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
           }, function() {
             WAITING_BTCPAY_FEED.add(btcPayData);
-            bootbox.alert("There was an error processing an automatic <b class='notoAssetColor'>BTC</b> payment."
+            bootbox.alert("There was an error processing an automatic <b class='notoAssetColor'>VIA</b> payment."
               + " This payment has been placed in a pending state. Please try again manually.");
           }
         );
@@ -370,11 +370,11 @@ function UpcomingBTCPayFeedViewModel() {
         WAITING_BTCPAY_FEED.add(btcPayData);
         WALLET.showTransactionCompleteDialog("A payment on a matched order for "
           + "<b class='notoQuantityColor'>" + btcPayData['btcQuantity'] + "</b>"
-          + "<b class='notoAssetColor'>BTC</b> is required, however, the address that made the order ("
+          + "<b class='notoAssetColor'>VIA</b> is required, however, the address that made the order ("
           + "<b class='notoAddrColor'>" + getAddressLabel(btcPayData['myAddr']) + "</b>"
           + ") lacks the balance necessary to do this automatically. This order has been placed in a pending state."
-          + "<br/><br/>Please deposit the necessary <b class='notoAssetColor'>BTC</b> into this address and"
-          + "manually make the payment from the Bitcoin icon in the top bar of the site.");  
+          + "<br/><br/>Please deposit the necessary <b class='notoAssetColor'>VIA</b> into this address and"
+          + "manually make the payment from the Viacoin icon in the top bar of the site.");
       }
 
     } else {
@@ -382,12 +382,12 @@ function UpcomingBTCPayFeedViewModel() {
       var prompt = "An order match for <b class='notoQuantityColor'>" + btcPayData['otherOrderQuantity'] + "</b>"
         + " <b class='notoAssetColor'>" + btcPayData['otherOrderAsset'] + "</b> was successfully made. "
         + " To finalize, this requires payment of <b class='notoQuantityColor'>"+ btcPayData['btcQuantity'] + "</b>"
-        + " <b class='notoAssetColor'>BTC</b>" + " from address"
+        + " <b class='notoAssetColor'>VIA</b>" + " from address"
         + " <b class='notoAddressColor'>" + getAddressLabel(btcPayData['myAddr']) + "</b>."
         + "<br/><br/><b>You must pay within 10 blocks time, or lose the purchase. Pay now?</b>";          
       bootbox.dialog({
         message: prompt,
-        title: "Order Settlement (BTC Pay)",
+        title: "Order Settlement (VIA Pay)",
         buttons: {
           success: {
             label: "No, hold off",
@@ -405,16 +405,16 @@ function UpcomingBTCPayFeedViewModel() {
                 { order_match_id: btcPayData['orderMatchID'], source: btcPayData['myAddr'], destBtcPay: btcPayData['btcDestAddr'] },
                 function(txHash, data, endpoint, addressType, armoryUTx) {
                   //notify the user of the automatic BTC payment
-                  var message = "Automatic <b class='notoAssetColor'>BTC</b> payment of"
-                    + " <b class='notoQuantityColor'>" + btcPayData['btcQuantity'] + "</b> <b class='notoAssetColor'>BTC</b> "
+                  var message = "Automatic <b class='notoAssetColor'>VIA</b> payment of"
+                    + " <b class='notoQuantityColor'>" + btcPayData['btcQuantity'] + "</b> <b class='notoAssetColor'>VIA</b> "
                     + (armoryUTx ? 'to be made' : 'made') + " from address <b class='notoAddressColor'>" + getAddressLabel(btcPayData['myAddr']) + "</b>"
                     + " for <b class='notoQuantityColor'>" + btcPayData['otherOrderQuantity'] + "</b>"
                     + " <b class='notoAssetColor'>" + btcPayData['otherOrderAsset'] + "</b>. ";
                   WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
                 }, function() {
                   WAITING_BTCPAY_FEED.add(btcPayData);
-                  bootbox.alert("There was an error processing an automatic <b class='notoAssetColor'>BTC</b> payment."
-                    + "<br/><br/><b>Please manually make the payment from the Bitcoin icon in the top bar of the site.</b>");
+                  bootbox.alert("There was an error processing an automatic <b class='notoAssetColor'>VIA</b> payment."
+                    + "<br/><br/><b>Please manually make the payment from the Viacoin icon in the top bar of the site.</b>");
                 }
               );
             }

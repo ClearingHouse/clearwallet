@@ -1,12 +1,12 @@
 {
-  "name": "counterwallet",
-  "description": "Counterwallet",
-  "author": "Counterparty development team",
+  "name": "clearwallet",
+  "description": "Clearwallet",
+  "author": "Counterparty and Clearinghouse development teams",
   "version": "1.4.0",
   "main": "build/index.html",
   "repository": { 
     "type" : "git",
-    "url" : "https://github.com/CounterpartyXCP/counterwallet.git"
+    "url" : "https://github.com/ClearingHouse/clearwallet.git"
   },
   "dependencies": {
     "grunt": "0.4.1",

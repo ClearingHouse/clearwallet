@@ -1,7 +1,7 @@
-Counterwallet
+Clearwallet
 ================
 
-Online Webwallet for [Counterparty](http://www.counterparty.co).
+Online Webwallet for [Clearinghouse](http://www.clearinghouse.co).
 
 Originally based off of [Carbonwallet](http://www.carbonwallet.com) (however virtually all the original code has been removed or rewritten).
 
@@ -9,15 +9,15 @@ Originally based off of [Carbonwallet](http://www.carbonwallet.com) (however vir
 Production Systems
 -------------------
 
-* Mainnet: **[counterwallet.co](https://www.counterwallet.co/)**
-* Testnet: **[testnet.counterwallet.co](https://testnet.counterwallet.co/)**
+* Mainnet: **[clearwallet.co](https://www.clearwallet.co/)**
+* Testnet: **[testnet.clearwallet.co](https://testnet.clearwallet.co/)**
 
 
 Features
 ----------
 
 - Deterministic wallet addresses (BIP 32-based)
-- Supports the majority of Counterparty functionality
+- Supports the majority of Clearinghouse functionality
 - Fully-AJAX driven
 - Anonymous
 - Runs in the browser, with keys created in memory
@@ -68,10 +68,10 @@ grunt build
 grunt freeze
 ```
 
-Setting up your own Counterwallet Server
+Setting up your own Clearwallet Server
 -----------------------------------------
 
-See [this link](https://github.com/CounterpartyXCP/counterpartyd_build/blob/master/docs/SettingUpAFederatedNode.rst) for more info.
+See [this link](https://github.com/ClearingHouse/clearinghoused_build/blob/master/docs/SettingUpAFederatedNode.rst) for more info.
 
 
 Licence

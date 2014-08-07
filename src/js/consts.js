@@ -8,7 +8,7 @@ var PREFERENCES = {}; //set when logging in
 
 var MAX_INT = Math.pow(2, 63) - 1;
 var UNIT = 100000000; //# satoshis in whole
-var MIN_FEE = 20000; // in satoshis (== .0002 BTC)
+var MIN_FEE = 100000; // in satoshis (== .001 BTC)
 var REGULAR_DUST_SIZE = 5430;
 var MULTISIG_DUST_SIZE = 5430 * 2;
 var MIN_PRIME_BALANCE = 50000; //in satoshis ... == .0005
@@ -17,10 +17,10 @@ var MAX_ASSET_DESC_LENGTH = 41; //42, minus a null term character?
 var FEE_FRACTION_REQUIRED_DEFAULT_PCT = .9;   //0.90% of total order
 var FEE_FRACTION_PROVIDED_DEFAULT_PCT = 1;   //1.00% of total order
 var FEE_FRACTION_DEFAULT_FILTER = .95;
-var BTC_ORDER_MIN_AMOUNT = 0.01;
+var BTC_ORDER_MIN_AMOUNT = 0.05;
 
 var DEFAULT_NUM_ADDRESSES = 1; //default number of addresses to generate. Go with 1 for now to be more newbie friendly
-var MAX_ADDRESSES = 20; //totall arbitrary :)
+var MAX_ADDRESSES = 20; //totally arbitrary :)
 
 //Order expiration
 var ORDER_DEFAULT_EXPIRATION = 1000; //num blocks until expiration (at ~9 min per block this is ~6.75 days)
@@ -64,7 +64,7 @@ var ENTITY_NAMES = {
   'sends': 'Send',
   'orders': 'Order',
   'order_matches': 'Order Match',
-  'btcpays': 'BTCPay',
+  'btcpays': 'VIAPay',
   'issuances': 'Issuance',
   'broadcasts': 'Broadcast',
   'bets': 'Bet',
@@ -174,8 +174,8 @@ var LEVERAGE_UNIT = 5040;
 
 var MAINNET_UNSPENDABLE = '1CounterpartyXXXXXXXXXXXXXXXUWLpVr';
 var TESTNET_UNSPENDABLE = 'mvCounterpartyXXXXXXXXXXXXXXW24Hef';
-var TESTNET_BURN_START = 154908;
-var TESTNET_BURN_END = 4017708;
+var TESTNET_BURN_START = 50000;
+var TESTNET_BURN_END = 65700000;
 
 
 /***********

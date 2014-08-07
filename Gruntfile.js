@@ -14,9 +14,9 @@ module.exports = function (grunt) {
                 depsDir: 'vendors/',
                 /*cdn: {
                     hosts: {
-                        'css': ['https://css1.counterwallet.dev', 'https://css2.counterwallet.dev'],
-                        'js': ['https://js1.counterwallet.dev', 'https://js2.counterwallet.dev'],
-                        'assets': ['https://assets1.counterwallet.dev', 'https://assets2.counterwallet.dev']
+                        'css': ['https://css1.clearwallet.dev', 'https://css2.clearwallet.dev'],
+                        'js': ['https://js1.clearwallet.dev', 'https://js2.clearwallet.dev'],
+                        'assets': ['https://assets1.clearwallet.dev', 'https://assets2.clearwallet.dev']
                     }
                 }*/
             },
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
     }
     /*config['chrome-extension'] = {
         options: {
-            name: "counterwallet",
+            name: "clearwallet",
             version: pkg.version,
             id: "00000000000000000000000000000000",
             //updateUrl: "http://example.com/extension/111111/",

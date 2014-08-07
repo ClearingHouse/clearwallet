@@ -57,15 +57,15 @@ function assetsToAssetPair(asset1, asset2) {
   var base = null;
   var quote = null;
   
-  if(asset1 == 'BTC' || asset2 == 'BTC') {
-      base = asset1 == 'BTC' ? asset2 : asset1;
-      quote = asset1 == 'BTC' ? asset1 : asset2;
-  } else if(asset1 == 'XCP' || asset2 == 'XCP') {
-      base = asset1 == 'XCP' ? asset2 : asset1;
-      quote = asset1 == 'XCP' ? asset1 : asset2;
-  } else if(asset1 == 'XBTC' || asset2 == 'XBTC') {
-      base = asset1 == 'XBTC' ? asset2 : asset1;
-      quote = asset1 == 'XBTC' ? asset1 : asset2;
+  if(asset1 == 'VIA' || asset2 == 'VIA') {
+      base = asset1 == 'VIA' ? asset2 : asset1;
+      quote = asset1 == 'VIA' ? asset1 : asset2;
+  } else if(asset1 == 'XCH' || asset2 == 'XCH') {
+      base = asset1 == 'XCH' ? asset2 : asset1;
+      quote = asset1 == 'XCH' ? asset1 : asset2;
+  } else if(asset1 == 'XVIA' || asset2 == 'XVIA') {
+      base = asset1 == 'XVIA' ? asset2 : asset1;
+      quote = asset1 == 'XVIA' ? asset1 : asset2;
   } else  {
       base = asset1 < asset2 ? asset1 : asset2;
       quote = asset1 < asset2 ? asset2 : asset1;

@@ -22,7 +22,7 @@ PendingActionViewModel.calcText = function(category, data) {
   }
 
   if(category == 'burns') {
-    desc = pending + " burn of <Am>" + normalizeQuantity(data['quantity']) + "</Am> <As>BTC</As>";
+    desc = pending + " burn of <Am>" + normalizeQuantity(data['quantity']) + "</Am> <As>VIA</As>";
   } else if(category == 'sends') {
     desc = pending + " send of <Am>" + numberWithCommas(normalizeQuantity(data['quantity'], divisible)) + "</Am> <As>" + data['asset']
       + "</As> from <Ad>" + getLinkForCPData('address', data['source'],  getAddressLabel(data['source'])) + "</Ad>"
@@ -62,8 +62,8 @@ PendingActionViewModel.calcText = function(category, data) {
     desc = pending + " <b>" + data['bet_type'] + "</b> bet on feed @ <Ad>"
       + getLinkForCPData('address', data['feed_address'], getAddressLabel(data['feed_address'])) + "</Ad><br/>"
       + "Wager: <Am>"
-      + numberWithCommas(normalizeQuantity(data['wager_quantity'])) + "</Am> <As>XCP</As>, Counterwager: <Am>"
-      + numberWithCommas(normalizeQuantity(data['counterwager_quantity'])) + "</Am> <As>XCP</As>";  
+      + numberWithCommas(normalizeQuantity(data['wager_quantity'])) + "</Am> <As>XCH</As>, Counterwager: <Am>"
+      + numberWithCommas(normalizeQuantity(data['counterwager_quantity'])) + "</Am> <As>XCH</As>";
   } else if(category == 'dividends') {
     
     var divUnitDivisible;
@@ -82,18 +82,18 @@ PendingActionViewModel.calcText = function(category, data) {
   } else if(category == 'callbacks') {
     desc = pending + " callback for <Am>" + (data['fraction'] * 100).toFixed(4) + "%</Am> outstanding on token <As>" + data['asset'] + "</As>";
   } else if(category == 'btcpays') {
-    desc = pending + " BTC Payment from <Ad>" + getAddressLabel(data['source']) + "</Ad>";
+    desc = pending + " VIA Payment from <Ad>" + getAddressLabel(data['source']) + "</Ad>";
   } else if(category == 'rps') {
     desc  = pending + "  RPS game with <Ad>" + getAddressLabel(data['source']) + "</Ad>: ";
-    desc += " <Am>"+numberWithCommas(normalizeQuantity(data['wager'])) + '</Am> <As>XCP</As>';
+    desc += " <Am>"+numberWithCommas(normalizeQuantity(data['wager'])) + '</Am> <As>XCH</As>';
   } else if(category == 'rpsresolves') {
     desc  = pending + " RPS resolution with <Ad>" + getAddressLabel(data['source']) + "</Ad>";
   } else if(category == 'order_matches') {
 
-    if (WALLET.getAddressObj(data['tx1_address']) && data['forward_asset'] == 'BTC' && data['_status'] == 'pending') {      
-      desc = "Waiting <Am>" + numberWithCommas(normalizeQuantity(data['forward_quantity'])) + "</Am> <As>BTC</As> payment from <Ad>" + getAddressLabel(data['tx0_address']) + "</Ad>";
-    } else if (WALLET.getAddressObj(data['tx0_address']) && data['backward_asset'] == 'BTC' && data['_status'] == 'pending') {
-      desc = "Waiting <Am>" + numberWithCommas(normalizeQuantity(data['backward_quantity'])) + "</Am> <As>BTC</As> payment from <Ad>" + getAddressLabel(data['tx1_address']) + "</Ad>";
+    if (WALLET.getAddressObj(data['tx1_address']) && data['forward_asset'] == 'VIA' && data['_status'] == 'pending') {
+      desc = "Waiting <Am>" + numberWithCommas(normalizeQuantity(data['forward_quantity'])) + "</Am> <As>VIA</As> payment from <Ad>" + getAddressLabel(data['tx0_address']) + "</Ad>";
+    } else if (WALLET.getAddressObj(data['tx0_address']) && data['backward_asset'] == 'VIA' && data['_status'] == 'pending') {
+      desc = "Waiting <Am>" + numberWithCommas(normalizeQuantity(data['backward_quantity'])) + "</Am> <As>VIA</As> payment from <Ad>" + getAddressLabel(data['tx1_address']) + "</Ad>";
     }
 
   } else {
@@ -122,7 +122,7 @@ function PendingActionFeedViewModel() {
 
   self.pendingSellBTCOrdersCount = ko.computed(function() {
     return $.map(self.entries(), function(item) { 
-        var sellingBTC = ('orders' == item.CATEGORY && 'BTC' == item.DATA.give_asset) || ('btcpays' == item.CATEGORY);
+        var sellingBTC = ('orders' == item.CATEGORY && 'VIA' == item.DATA.give_asset) || ('btcpays' == item.CATEGORY);
         return sellingBTC ? item : null;
     }).length;
   }, self);
@@ -177,7 +177,7 @@ function PendingActionFeedViewModel() {
       // routine should NOT be deleting. This hack is a consequence of managing BTC balances synchronously like we do)
       if(btcRefreshSpecialLogic) {
         assert(category == "sends");
-        if (match['CATEGORY'] != category || match['DATA']['asset'] != 'BTC')
+        if (match['CATEGORY'] != category || match['DATA']['asset'] != 'VIA')
           return;
           
         //Also, with this logic, since we found the entry as a pending action, add a completed send action
@@ -287,8 +287,8 @@ PendingActionFeedViewModel.modifyBalancePendingFlag = function(category, data, f
   if(category == 'burns') {
 
     addressObj = WALLET.getAddressObj(data['source']);
-    addressObj.getAssetObj("XCP").balanceChangePending(flagSetting);
-    updateUnconfirmedBalance(data['source'], "BTC", data['quantity'] * -1);
+    addressObj.getAssetObj("XCH").balanceChangePending(flagSetting);
+    updateUnconfirmedBalance(data['source'], "VIA", data['quantity'] * -1);
     
 
   } else if(category == 'sends') {
@@ -298,8 +298,8 @@ PendingActionFeedViewModel.modifyBalancePendingFlag = function(category, data, f
 
   } else if(category == 'btcpays') {
 
-    updateUnconfirmedBalance(data['source'], "BTC", data['quantity'] * -1);
-    updateUnconfirmedBalance(data['destination'], "BTC", data['quantity']);
+    updateUnconfirmedBalance(data['source'], "VIA", data['quantity'] * -1);
+    updateUnconfirmedBalance(data['destination'], "VIA", data['quantity']);
 
   } else if(category == 'issuances' && !data['locked'] && !data['transfer_destination']) {
     //with this, we don't modify the balanceChangePending flag, but the issuanceQtyChangePending flag instead...
@@ -311,7 +311,7 @@ PendingActionFeedViewModel.modifyBalancePendingFlag = function(category, data, f
     } else if (!assetObj) {
       //updateUnconfirmedBalance(data['source'], data['asset'], data['quantity'], null, data);
       // issuance fee
-      updateUnconfirmedBalance(data['source'], 'XCP', -ASSET_CREATION_FEE_XCP * UNIT);
+      updateUnconfirmedBalance(data['source'], 'XCH', -ASSET_CREATION_FEE_XCP * UNIT);
     }
 
   } else if (category == 'dividend') {
@@ -321,17 +321,17 @@ PendingActionFeedViewModel.modifyBalancePendingFlag = function(category, data, f
 
   } else if (category == 'orders') {
 
-    if (data['give_asset'] != 'BTC') {
+    if (data['give_asset'] != 'VIA') {
       updateUnconfirmedBalance(data['source'], data['give_asset'], data['give_quantity'] * -1);
     }   
 
   } else if (category == 'bets') {
 
-    updateUnconfirmedBalance(data['source'], 'XCP', data['wager_quantity'] * -1);
+    updateUnconfirmedBalance(data['source'], 'XCH', data['wager_quantity'] * -1);
     
   } else if (category == 'rps') {
 
-    updateUnconfirmedBalance(data['source'], 'XCP', data['wager'] * -1);
+    updateUnconfirmedBalance(data['source'], 'XCH', data['wager'] * -1);
     
   }
 }
