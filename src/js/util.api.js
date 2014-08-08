@@ -167,7 +167,7 @@ function _makeJSONAPICall(destType, endpoints, method, params, timeout, onSucces
       'timeout': timeout
     }
     
-    if(destType == "counterblockd") {
+    if(destType == "clearblockd") {
       fetchData(endpoints,
         onSuccess, onError,
         JSON.stringify({
@@ -176,14 +176,14 @@ function _makeJSONAPICall(destType, endpoints, method, params, timeout, onSucces
           "method": method,
           "params": params
         }), extraAJAXOpts, true);
-    } else if(destType == "counterpartyd") {
+    } else if(destType == "clearinghoused") {
       //make JSON API call to counterblockd, which will proxy it to counterpartyd
       fetchData(endpoints,
         onSuccess, onError,
         JSON.stringify({
           "jsonrpc": "2.0",
           "id": 0,
-          "method": "proxy_to_counterpartyd",
+          "method": "proxy_to_clearinghoused",
           "params": {"method": method, "params": params }
         }), extraAJAXOpts, true);
     }
@@ -196,7 +196,7 @@ function _makeJSONAPICall(destType, endpoints, method, params, timeout, onSucces
       'timeout': timeout
     }
     
-    if(destType == "counterblockd") {
+    if(destType == "clearblockd") {
       qs = $.param({
         "jsonrpc": "2.0",
         "id": 0,
@@ -204,12 +204,12 @@ function _makeJSONAPICall(destType, endpoints, method, params, timeout, onSucces
         "params": _encodeForJSONRPCOverGET(params)
       });
       fetchData(_formulateEndpoints(endpoints, qs), onSuccess, onError, null, extraAJAXOpts, true);
-    } else if(destType == "counterpartyd") {
+    } else if(destType == "clearinghoused") {
       //make JSON API call to counterblockd, which will proxy it to counterpartyd
       qs = $.param({
         "jsonrpc": "2.0",
         "id": 0,
-        "method": "proxy_to_counterpartyd",
+        "method": "proxy_to_clearinghoused",
         "params": _encodeForJSONRPCOverGET({"method": method, "params": params })
       });
       fetchData(_formulateEndpoints(endpoints, qs), onSuccess, onError, null, extraAJAXOpts, true);
@@ -219,7 +219,7 @@ function _makeJSONAPICall(destType, endpoints, method, params, timeout, onSucces
 
 function _getDestTypeFromMethod(method) {
   //based on the method, determine the endpoints list to use
-  var destType = "counterpartyd";
+  var destType = "clearinghoused";
   if(['is_ready', 'get_reflected_host_info', 'is_chat_handle_in_use',
       'get_messagefeed_messages_by_index', 'get_normalized_balances', 'get_required_btcpays',
       'get_chain_address_info', 'get_chain_block_height', 'get_chain_txns_status',
@@ -232,13 +232,13 @@ function _getDestTypeFromMethod(method) {
       'parse_base64_feed', 'get_open_rps_count', 'get_user_rps', 
       'get_users_pairs', 'get_market_orders', 'get_market_trades', 'get_markets_list', 'get_market_details',
       'get_pubkey_for_address', 'create_armory_utx', 'convert_armory_signedtx_to_raw_hex', 'create_support_case'].indexOf(method) >= 0) {
-    destType = "counterblockd";
+    destType = "clearblockd";
   }
   return destType;
 }
 
 function supportUnconfirmedChangeParam(method) {
-  return method.split("_").shift()=="create" && _getDestTypeFromMethod(method)=="counterpartyd";
+  return method.split("_").shift()=="create" && _getDestTypeFromMethod(method)=="clearinghoused";
 }
 
 function _multiAPIPrimative(method, params, onFinished) {
