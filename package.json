@@ -1,7 +1,7 @@
 {
   "name": "clearwallet",
   "description": "Clearwallet",
-  "author": "Counterparty and Clearinghouse development teams",
+  "author": "Counterparty and ClearingHouse development teams",
   "version": "1.4.0",
   "main": "build/index.html",
   "repository": { 

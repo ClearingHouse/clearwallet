@@ -1,7 +1,7 @@
 Clearwallet
 ================
 
-Online Webwallet for [Clearinghouse](http://www.clearinghouse.co).
+Online Webwallet for [ClearingHouse](http://clearinghouse.io).
 
 Originally based off of [Carbonwallet](http://www.carbonwallet.com) (however virtually all the original code has been removed or rewritten).
 
@@ -9,7 +9,7 @@ Originally based off of [Carbonwallet](http://www.carbonwallet.com) (however vir
 Production Systems
 -------------------
 
-* Mainnet: **[clearwallet.co](https://www.clearwallet.co/)**
+* Mainnet: **[clearwallet.co](https://clearwallet.co/)**
 * Testnet: **[testnet.clearwallet.co](https://testnet.clearwallet.co/)**
 
 
@@ -17,7 +17,7 @@ Features
 ----------
 
 - Deterministic wallet addresses (BIP 32-based)
-- Supports the majority of Clearinghouse functionality
+- Supports the majority of ClearingHouse functionality
 - Fully-AJAX driven
 - Anonymous
 - Runs in the browser, with keys created in memory

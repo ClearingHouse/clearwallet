@@ -7,11 +7,11 @@ var IS_MOBILE_OR_TABLET = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Op
 var PREFERENCES = {}; //set when logging in
 
 var MAX_INT = Math.pow(2, 63) - 1;
-var UNIT = 100000000; //# satoshis in whole
-var MIN_FEE = 100000; // in satoshis (== .001 BTC)
+var UNIT = 100000000; //# draks in whole
+var MIN_FEE = 100000; // in draks (== .001 VIA)
 var REGULAR_DUST_SIZE = 5430;
 var MULTISIG_DUST_SIZE = 5430 * 2;
-var MIN_PRIME_BALANCE = 50000; //in satoshis ... == .0005
+var MIN_PRIME_BALANCE = 50000000; //in draks ... == .5
 var ASSET_CREATION_FEE_XCP = 0.5; //in normalized XCP
 var MAX_ASSET_DESC_LENGTH = 41; //42, minus a null term character?
 var FEE_FRACTION_REQUIRED_DEFAULT_PCT = .9;   //0.90% of total order
@@ -23,9 +23,9 @@ var DEFAULT_NUM_ADDRESSES = 1; //default number of addresses to generate. Go wit
 var MAX_ADDRESSES = 20; //totally arbitrary :)
 
 //Order expiration
-var ORDER_DEFAULT_EXPIRATION = 1000; //num blocks until expiration (at ~9 min per block this is ~6.75 days)
-var ORDER_BTCSELL_DEFAULT_EXPIRATION = 2000; //num blocks until expiration for selling BTC order
-var ORDER_MAX_EXPIRATION = 3000; //max expiration for order
+var ORDER_DEFAULT_EXPIRATION = 25000; //num blocks until expiration (at ~9 min per block this is ~6.75 days)
+var ORDER_BTCSELL_DEFAULT_EXPIRATION = 50000; //num blocks until expiration for selling BTC order
+var ORDER_MAX_EXPIRATION = 75000; //max expiration for order
 
 var STATS_MAX_NUM_TRANSACTIONS = 100; //max # transactions to show in the table
 var VIEW_PRICES_NUM_ASSET_PAIRS = 50; //show market info for this many pairs
@@ -172,7 +172,9 @@ var BET_MATCHES_STATUS = {
 
 var LEVERAGE_UNIT = 5040;
 
-var MAINNET_UNSPENDABLE = '1CounterpartyXXXXXXXXXXXXXXXUWLpVr';
+var MAINNET_UNSPENDABLE = 'VClearingHouseXXXXXXXXXXXXXXUWLpVr';
+var MAINNET_BURN_START = 88525;
+var MAINNET_BURN_END = 65700000;
 var TESTNET_UNSPENDABLE = 'tTs8WCG7RQV16WdfwAo2U4FFMZmz2EBNuu';
 var TESTNET_BURN_START = 50000;
 var TESTNET_BURN_END = 65700000;
@@ -209,14 +211,14 @@ location.hash = '';
 var ORIG_REFERER = document.referrer;
 
 //CONSTANTS THAT DEPEND ON IS_DEV / USE_TESTNET
-var BLOCKEXPLORER_URL = USE_TESTNET ? "http://test.bitcore.io" : "http://live.bitcore.io";
+var BLOCKEXPLORER_URL = USE_TESTNET ? "http://testnet.explorer.viacoin.org" : "http://explorer.viacoin.org";
 var GOOGLE_ANALYTICS_UAID = null; //will be set in counterwallet.js
 var ROLLBAR_ACCESS_TOKEN = null; //will be set in counterwallet.js
 
 var TRANSACTION_DELAY = 5000 // delay between transaction to avoid error -22 (vin reused)
 var TRANSACTION_MAX_RETRY = 5 // max retry when transaction failed (don't include first transaction, so 3 retry means 4 queries)
 
-var DONATION_ADDRESS = USE_TESTNET ? 'n4MGGJBkW9RjRKBbZfBAceHDndhywvVPV9' : '19U6MmLLumsqxXSBMB5FgYXbezgXYC6Gpe';
+var DONATION_ADDRESS = USE_TESTNET ? 'tQpQvYmQi5Hx96cs98heEhf4qk2pH4oyKf' : 'VogSuqV7zyRdauncDL6WjtqFAvmEK5rVGn'; // testnet faucet
 
 var APPROX_SECONDS_PER_BLOCK = USE_TESTNET ? 20 * 60 : 8 * 60; //a *rough* estimate on how many seconds per each block (used for estimating open order time left until expiration, etc)
 

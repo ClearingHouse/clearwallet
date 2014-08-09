@@ -375,7 +375,7 @@ function WalletViewModel() {
   self.broadcastSignedTx = function(signedTxHex, onSuccess, onError) {
     if (signedTxHex==false) {
       bootbox.alert("Client-side transaction validation FAILED. Transaction will be aborted and NOT broadcast."
-                    + " Please contact the Clearinghouse development team");
+                    + " Please contact the ClearingHouse development team");
       return false;
     }
     $.jqlog.debug("RAW SIGNED HEX: " + signedTxHex);
@@ -475,7 +475,7 @@ function WalletViewModel() {
     
     if(self.getBalance(address, "VIA", false) < MIN_PRIME_BALANCE) {
       bootbox.alert("Cannot do this action as you have insufficient <b class='notoAssetColor'>VIA</b> at this address."
-        + "Due to Viacoin fees, each Clearinghouse action requires"
+        + "Due to Viacoin fees, each ClearingHouse action requires"
         + " approximately <b class='notoQuantityColor'>" + normalizeQuantity(MIN_PRIME_BALANCE) + "</b> <b class='notoAssetColor'>VIA</b> to perform.<br/><br/>"
         + "Please deposit the necessary <b class='notoAssetColor'>VIA</b> into <b class='notoAddrColor'>" + getAddressLabel(address) + "</b> and try again.");
       return false;

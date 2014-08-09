@@ -42,18 +42,11 @@
   </div>
 </div>
 
-<div id="oldWalletDetectedNotice" data-bind="fadeVisibleInOnly: WALLET.isOldWallet()" class="alert alert-warning alert-block">
-    <i class="fa-fw fa fa-level-up"></i>
-    <strong>Old Wallet detected:</strong> We see you are using an old wallet. Please transfer your funds to a newly
-    created wallet as soon as possible. Support for 'old' wallets will be discontinued <b>July 15, 2014</b>.
-    <a href="https://forums.clearinghouse.io/index.php?topic=321.0" target="_blank">More info</a>.
-</div>
-
-<div class="alert alert-info">
+<!-- div class="alert alert-info">
     <i class="fa-fw fa fa-exchange"></i>
     <b>Want to buy XCH?</b> Beyond using the decentralized exchange in Clearwallet, other options for purchasing XCH are
-    <a href="https://www.clearinghouse.io/xcp/" target="_blank">listed here</a>.
-</div>
+    <a href="https://www.clearinghouse.io/xch/" target="_blank">listed here</a>.
+</div -->
 
 <div id="gettingStartedNotice" data-bind="fadeVisibleInOnly: WALLET.isNew() && !WALLET.isOldWallet() && window._BALANCES_HAS_LOADED_ALREADY === undefined" class="alert alert-success alert-block">
     <a class="close" data-dismiss="alert" href="#">×</a>
@@ -62,7 +55,7 @@
     To start using the wallet, simply send some VIA or XCH to the address (just single click on the address string
     itself to select it, then copy that text, which you can then give to others or use to
     send funds to). <span data-bind="visible: USE_TESTNET">Note that, on testnet, you can use a
-    <b><a href="https://en.bitcoin.it/wiki/Bitcoin_faucet" target="_blank">Testnet faucet</a> to get VIA to start with</b>.</span>
+    <b><a href="http://viacoin.coinlabs.org/testnetfaucet/" target="_blank">Testnet faucet</a> to get VIA to start with</b>.</span>
     <br/><br/>
     
     One important thing to know before getting started is that when you perform an action in Clearwallet (i.e. place
