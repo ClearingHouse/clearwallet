@@ -9,10 +9,10 @@ var PREFERENCES = {}; //set when logging in
 var MAX_INT = Math.pow(2, 63) - 1;
 var UNIT = 100000000; //# draks in whole
 var MIN_FEE = 100000; // in draks (== .001 VIA)
-var REGULAR_DUST_SIZE = 5430;
-var MULTISIG_DUST_SIZE = 5430 * 2;
-var MIN_PRIME_BALANCE = 50000000; //in draks ... == .5
-var ASSET_CREATION_FEE_XCP = 0.5; //in normalized XCP
+var REGULAR_DUST_SIZE = 56000;
+var MULTISIG_DUST_SIZE = 56000 * 2;
+var MIN_PRIME_BALANCE = 500000; //in draks ... == .005
+var ASSET_CREATION_FEE_XCP = 1; //in normalized XCP
 var MAX_ASSET_DESC_LENGTH = 41; //42, minus a null term character?
 var FEE_FRACTION_REQUIRED_DEFAULT_PCT = .9;   //0.90% of total order
 var FEE_FRACTION_PROVIDED_DEFAULT_PCT = 1;   //1.00% of total order
@@ -29,11 +29,11 @@ var ORDER_MAX_EXPIRATION = 75000; //max expiration for order
 
 var STATS_MAX_NUM_TRANSACTIONS = 100; //max # transactions to show in the table
 var VIEW_PRICES_NUM_ASSET_PAIRS = 50; //show market info for this many pairs
-var VIEW_PRICES_ASSET_PAIRS_REFRESH_EVERY = 5 * 60 * 1000; //refresh asset pair market info every 5 minutes
+var VIEW_PRICES_ASSET_PAIRS_REFRESH_EVERY = 2 * 60 * 1000; //refresh asset pair market info every 5 minutes
 var VIEW_PRICES_NUM_LATEST_TRADES = 50; //show this many latest trades on the view prices page
-var VIEW_PRICES_LATEST_TRADES_REFRESH_EVERY = 5 * 60 * 1000; //refresh latest trades every 5 minutes
+var VIEW_PRICES_LATEST_TRADES_REFRESH_EVERY = 2 * 60 * 1000; //refresh latest trades every 5 minutes
 
-var MARKET_INFO_REFRESH_EVERY = 5 * 60 * 1000; //refresh market info every 5 minutes while enabled (on buy/sell page, and view prices page) 
+var MARKET_INFO_REFRESH_EVERY = 2 * 60 * 1000; //refresh market info every 5 minutes while enabled (on buy/sell page, and view prices page)
 
 var CHAT_NUM_USERS_ONLINE_REFRESH_EVERY = 5 * 60 * 1000; //refresh online user count every 5 minutes while enabled
 
@@ -220,7 +220,7 @@ var TRANSACTION_MAX_RETRY = 5 // max retry when transaction failed (don't includ
 
 var DONATION_ADDRESS = USE_TESTNET ? 'tQpQvYmQi5Hx96cs98heEhf4qk2pH4oyKf' : 'VogSuqV7zyRdauncDL6WjtqFAvmEK5rVGn'; // testnet faucet
 
-var APPROX_SECONDS_PER_BLOCK = USE_TESTNET ? 20 * 60 : 8 * 60; //a *rough* estimate on how many seconds per each block (used for estimating open order time left until expiration, etc)
+var APPROX_SECONDS_PER_BLOCK = USE_TESTNET ? 24 : 24; //a *rough* estimate on how many seconds per each block (used for estimating open order time left until expiration, etc)
 
 var USER_COUNTRY = ''; //set in login.js
 var CURRENT_PAGE_URL = ''; // set in loadUrl()

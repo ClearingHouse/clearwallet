@@ -1167,9 +1167,9 @@ function TestnetBurnModalViewModel() {
     isValidPositiveQuantity: self,
     validation: [{
       validator: function (val, self) {
-        return parseFloat(val) > 0 && parseFloat(val) <= 1;
+        return parseFloat(val) > 0 && parseFloat(val) <= 10000;
       },
-      message: 'Quantity entered must be between 0 and 1 VIA.',
+      message: 'Quantity entered must be between 0 and 10000 VIA.',
       params: self
     },{
       validator: function (val, self) {
@@ -1197,7 +1197,7 @@ function TestnetBurnModalViewModel() {
   
   self.maxPossibleBurn = ko.computed(function() { //normalized
     if(self.btcAlreadyBurned() === null) return null;
-    return Math.min(1 - self.btcAlreadyBurned(), WALLET.getAddressObj(self.address()).getAssetObj('VIA').normalizedBalance())
+    return Math.min(10000 - self.btcAlreadyBurned(), WALLET.getAddressObj(self.address()).getAssetObj('VIA').normalizedBalance())
   }, self);
   
   self.validationModel = ko.validatedObservable({
