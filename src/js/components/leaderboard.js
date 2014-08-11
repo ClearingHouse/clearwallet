@@ -12,11 +12,9 @@ var AssetLeaderboardViewModel = CClass.create(function() {
   self._lastWindowWidth = null;
   
   self.init = function(assets) {
-    console.log("initing:", assets)
     //Get a list of all assets the user has
     self.isLeaderboard = !assets;
     failoverAPI(self.isLeaderboard ? "get_market_info_leaderboard" : "get_market_info", self.isLeaderboard ? {} : {assets: assets}, function(data, endpoint) {
-      console.log("Got data:", data)
       self.marketInfo = data;
       self.updateMarketInfo();
       self.showPortfolioIn("XCH"); //causes the table to be generated off of self.marketInfo
@@ -36,7 +34,6 @@ var AssetLeaderboardViewModel = CClass.create(function() {
     
     //label xch marketcap positions
     marketInfo = self.isLeaderboard ? self.marketInfo['xch'] : self.marketInfo; 
-    console.log(self.
     marketInfo.sort(
       function(l, r) {
         return l['market_cap_in_xch'] == r['market_cap_in_xch'] ? 0 : (l['market_cap_in_xch'] < r['market_cap_in_xch'] ? 1 : -1)
