@@ -133,11 +133,11 @@ var AssetLeaderboardViewModel = CClass.create(function() {
     self.generateAssetMiniCharts();
   }
   
-  self.showPortfolioInxch = function() {
+  self.showPortfolioInXCH = function() {
     self.showPortfolioIn("XCH");
   }
   
-  self.showPortfolioInvia = function() {
+  self.showPortfolioInVIA = function() {
     self.showPortfolioIn("VIA");
   }
   
