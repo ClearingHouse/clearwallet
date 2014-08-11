@@ -339,7 +339,7 @@ function WalletViewModel() {
       if(isRecurring && self.autoRefreshBTCBalances) {
         setTimeout(function() {
           if(self.autoRefreshBTCBalances) { self.refreshBTCBalances(true); }
-        }, 60000 * 5);
+        }, 1000 * 30);
       }
     }, function(jqXHR, textStatus, errorThrown) {
       //insight down or spazzing, set all BTC balances out to null
@@ -355,7 +355,7 @@ function WalletViewModel() {
       if(isRecurring && self.autoRefreshBTCBalances) {
         setTimeout(function() {
           if(self.autoRefreshBTCBalances) { self.refreshBTCBalances(true); }
-        }, 60000 * 5);
+        }, 1000 * 30);
       }
     });
   }
