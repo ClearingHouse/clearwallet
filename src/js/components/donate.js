@@ -78,7 +78,7 @@ function DonationViewModel() {
     };
     $.jqlog.debug(params);
     var onSuccess = function(txHash, data, endpoint, addressType, armoryUTx) {
-      var message = "<b>You " + (armoryUTx ? "are choosing to send" : "chose to send") + self.quantity()
+      var message = "<b>You " + (armoryUTx ? "are choosing to send" : "chose to send") + " " + self.quantity()
         + " " + self.donationCurrency() + " to support development. Thank you!</b> ";
       WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
     }
