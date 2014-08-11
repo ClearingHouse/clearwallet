@@ -374,6 +374,20 @@ function expireDate(expire_index) {
   return new Date((new Date()).getTime() + (expire_in * APPROX_SECONDS_PER_BLOCK * 1000));
 }
 
+function bytesToHex(bytes) {
+  for (var hex = [], i = 0; i < bytes.length; i++) {
+    hex.push((bytes[i] >>> 4).toString(16));
+    hex.push((bytes[i] & 0xF).toString(16));
+  }
+  return hex.join("");
+}
+
+function hexToBytes(hex) {
+  for (var bytes = [], c = 0; c < hex.length; c += 2)
+    bytes.push(parseInt(hex.substr(c, 2), 16));
+  return bytes;
+}
+
 function genRandom() {
   var random = new Uint8Array(16);
             
@@ -387,11 +401,11 @@ function genRandom() {
     assert(false, errText);
   }
 
-  return Crypto.util.bytesToHex(random);
+  return /*Crypto.util.*/bytesToHex(random);
 }
 
 function doubleHash(hexstr) {
-  return bitcore.util.sha256(bitcore.util.sha256(Crypto.util.hexToBytes(hexstr))).toString('hex');
+  return bitcore.util.sha256(bitcore.util.sha256(/*Crypto.util.*/hexToBytes(hexstr))).toString('hex');
 }
 
 function checkCountry(action, callback) {
