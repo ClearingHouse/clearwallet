@@ -12,9 +12,11 @@ var AssetLeaderboardViewModel = CClass.create(function() {
   self._lastWindowWidth = null;
   
   self.init = function(assets) {
+    console.log("initing:", assets)
     //Get a list of all assets the user has
     self.isLeaderboard = !assets;
     failoverAPI(self.isLeaderboard ? "get_market_info_leaderboard" : "get_market_info", self.isLeaderboard ? {} : {assets: assets}, function(data, endpoint) {
+      console.log("Got data:", data)
       self.marketInfo = data;
       self.updateMarketInfo();
       self.showPortfolioIn("XCH"); //causes the table to be generated off of self.marketInfo
@@ -32,79 +34,80 @@ var AssetLeaderboardViewModel = CClass.create(function() {
     //Compose the table this has changed
     var i = null, j = null, marketInfo = null;
     
-    //label XCP marketcap positions
-    marketInfo = self.isLeaderboard ? self.marketInfo['xcp'] : self.marketInfo; 
+    //label xch marketcap positions
+    marketInfo = self.isLeaderboard ? self.marketInfo['xch'] : self.marketInfo; 
+    console.log(self.
     marketInfo.sort(
       function(l, r) {
-        return l['market_cap_in_xcp'] == r['market_cap_in_xcp'] ? 0 : (l['market_cap_in_xcp'] < r['market_cap_in_xcp'] ? 1 : -1)
+        return l['market_cap_in_xch'] == r['market_cap_in_xch'] ? 0 : (l['market_cap_in_xch'] < r['market_cap_in_xch'] ? 1 : -1)
       }
     );
     for(i=0; i < marketInfo.length; i++) {
-      marketInfo[i]['position_xcp'] = i + 1;
+      marketInfo[i]['position_xch'] = i + 1;
     }
     assert(self.marketCapTables()[0]['base'] == 'XCH');
     for(i=0; i < marketInfo.length; i++) {
-      if(!marketInfo[i]['price_in_xcp']) continue;
+      if(!marketInfo[i]['price_in_xch']) continue;
       self.marketCapTables()[0]['data'].push({
-        position: marketInfo[i]['position_xcp'],
+        position: marketInfo[i]['position_xch'],
         asset: marketInfo[i]['asset'],
         dispAsset: AssetLeaderboardViewModel.formulateExtendedAssetInfo(marketInfo[i]['asset'],
           marketInfo[i]['extended_image'], marketInfo[i]['extended_website']),
-        marketCap: marketInfo[i]['market_cap_in_xcp'] ? (smartFormat(marketInfo[i]['market_cap_in_xcp'], 100, 0) + ' XCH') : '',
-        price: marketInfo[i]['aggregated_price_as_xcp'] ? (smartFormat(marketInfo[i]['aggregated_price_as_xcp'], 10, 4) + ' XCH') : '',
+        marketCap: marketInfo[i]['market_cap_in_xch'] ? (smartFormat(marketInfo[i]['market_cap_in_xch'], 100, 0) + ' XCH') : '',
+        price: marketInfo[i]['aggregated_price_as_xch'] ? (smartFormat(marketInfo[i]['aggregated_price_as_xch'], 10, 4) + ' XCH') : '',
         supply: smartFormat(marketInfo[i]['total_supply'], 100, 4) + ' ' + marketInfo[i]['asset'],
         //volume: marketInfo[i]['24h_summary']['vol'] ? (smartFormat(marketInfo[i]['24h_summary']['vol'], 100, 4) + ' ' + marketInfo[i]['asset']) : '',
-        //volume: (marketInfo[i]['24h_ohlc_in_xcp']['vol'] && marketInfo[i]['aggregated_price_in_xcp']) 
-        //  ? (smartFormat(marketInfo[i]['24h_ohlc_in_xcp']['vol'] * marketInfo[i]['aggregated_price_in_xcp'], 0, 4) + ' XCH') : '',
-        volume: (marketInfo[i]['24h_summary'] && marketInfo[i]['24h_summary']['vol'] && marketInfo[i]['aggregated_price_in_xcp']) 
-          ? (smartFormat(marketInfo[i]['24h_summary']['vol'] * marketInfo[i]['aggregated_price_in_xcp'], 10, 4) + ' XCH') : '',
-        pctChange: marketInfo[i]['24h_vol_price_change_in_xcp'] ? (smartFormat(marketInfo[i]['24h_vol_price_change_in_xcp'], 0, 2) + ' %') : '',
-        pctChangeColorClass: marketInfo[i]['24h_vol_price_change_in_xcp'] > 0 ? 'txt-color-green' : (marketInfo[i]['24h_vol_price_change_in_xcp'] < 0 ? 'txt-color-red' : 'initial'),
-        history: marketInfo[i]['7d_history_in_xcp'],
+        //volume: (marketInfo[i]['24h_ohlc_in_xch']['vol'] && marketInfo[i]['aggregated_price_in_xch']) 
+        //  ? (smartFormat(marketInfo[i]['24h_ohlc_in_xch']['vol'] * marketInfo[i]['aggregated_price_in_xch'], 0, 4) + ' XCH') : '',
+        volume: (marketInfo[i]['24h_summary'] && marketInfo[i]['24h_summary']['vol'] && marketInfo[i]['aggregated_price_in_xch']) 
+          ? (smartFormat(marketInfo[i]['24h_summary']['vol'] * marketInfo[i]['aggregated_price_in_xch'], 10, 4) + ' XCH') : '',
+        pctChange: marketInfo[i]['24h_vol_price_change_in_xch'] ? (smartFormat(marketInfo[i]['24h_vol_price_change_in_xch'], 0, 2) + ' %') : '',
+        pctChangeColorClass: marketInfo[i]['24h_vol_price_change_in_xch'] > 0 ? 'txt-color-green' : (marketInfo[i]['24h_vol_price_change_in_xch'] < 0 ? 'txt-color-red' : 'initial'),
+        history: marketInfo[i]['7d_history_in_xch'],
 
-        marketCapRaw: marketInfo[i]['market_cap_in_xcp'],
-        priceRaw: marketInfo[i]['aggregated_price_as_xcp'],
+        marketCapRaw: marketInfo[i]['market_cap_in_xch'],
+        priceRaw: marketInfo[i]['aggregated_price_as_xch'],
         supplyRaw: marketInfo[i]['total_supply'],
-        volumeRaw: marketInfo[i]['24h_ohlc_in_xcp'] ? marketInfo[i]['24h_ohlc_in_xcp']['vol'] : 0,
-        pctChangeRaw: marketInfo[i]['24h_vol_price_change_in_xcp']
+        volumeRaw: marketInfo[i]['24h_ohlc_in_xch'] ? marketInfo[i]['24h_ohlc_in_xch']['vol'] : 0,
+        pctChangeRaw: marketInfo[i]['24h_vol_price_change_in_xch']
       });
     }
     
-    //label BTC marketcap positions
-    marketInfo = self.isLeaderboard ? self.marketInfo['btc'] : self.marketInfo; 
+    //label via marketcap positions
+    marketInfo = self.isLeaderboard ? self.marketInfo['via'] : self.marketInfo; 
     marketInfo.sort(
       function(l, r) {
-        return l['market_cap_in_btc'] == r['market_cap_in_btc'] ? 0 : (l['market_cap_in_btc'] < r['market_cap_in_btc'] ? 1 : -1)
+        return l['market_cap_in_via'] == r['market_cap_in_via'] ? 0 : (l['market_cap_in_via'] < r['market_cap_in_via'] ? 1 : -1)
       }
     );
     for(i=0; i < marketInfo.length; i++) {
-      marketInfo[i]['position_btc'] = i + 1;
+      marketInfo[i]['position_via'] = i + 1;
     }
     assert(self.marketCapTables()[1]['base'] == 'VIA');
     for(i=0; i < marketInfo.length; i++) {
-      if(!marketInfo[i]['price_in_btc']) continue;
+      if(!marketInfo[i]['price_in_via']) continue;
       self.marketCapTables()[1]['data'].push({
-        position: marketInfo[i]['position_btc'],
+        position: marketInfo[i]['position_via'],
         asset: marketInfo[i]['asset'],
         dispAsset: AssetLeaderboardViewModel.formulateExtendedAssetInfo(marketInfo[i]['asset'],
           marketInfo[i]['extended_image'], marketInfo[i]['extended_website']),
-        marketCap: marketInfo[i]['market_cap_in_btc'] ? (smartFormat(marketInfo[i]['market_cap_in_btc'], 100, 0) + ' VIA') : '',
-        price: marketInfo[i]['aggregated_price_as_btc'] ? (smartFormat(marketInfo[i]['aggregated_price_as_btc'], 10, 4) + ' VIA') : '',
+        marketCap: marketInfo[i]['market_cap_in_via'] ? (smartFormat(marketInfo[i]['market_cap_in_via'], 100, 0) + ' VIA') : '',
+        price: marketInfo[i]['aggregated_price_as_via'] ? (smartFormat(marketInfo[i]['aggregated_price_as_via'], 10, 4) + ' VIA') : '',
         supply: smartFormat(marketInfo[i]['total_supply'], 100, 4) + ' ' + marketInfo[i]['asset'],
         //volume: marketInfo[i]['24h_summary']['vol'] ? (smartFormat(marketInfo[i]['24h_summary']['vol'], 100, 4) + ' ' + marketInfo[i]['asset']) : '',
-        //volume: (marketInfo[i]['24h_ohlc_in_btc']['vol'] && marketInfo[i]['aggregated_price_in_btc']) 
-        //  ? (smartFormat(marketInfo[i]['24h_ohlc_in_btc']['vol'] * marketInfo[i]['aggregated_price_in_btc'], 0, 4) + ' VIA') : '',
-        volume: (marketInfo[i]['24h_summary'] && marketInfo[i]['24h_summary']['vol'] && marketInfo[i]['aggregated_price_in_btc']) 
-          ? (smartFormat(marketInfo[i]['24h_summary']['vol'] * marketInfo[i]['aggregated_price_in_btc'], 10, 4) + ' VIA') : '',
-        pctChange: marketInfo[i]['24h_vol_price_change_in_btc'] ? (smartFormat(marketInfo[i]['24h_vol_price_change_in_btc'], 0, 2) + ' %') : '',
-        pctChangeColorClass: marketInfo[i]['24h_vol_price_change_in_btc'] > 0 ? 'txt-color-green' : (marketInfo[i]['24h_vol_price_change_in_btc'] < 0 ? 'txt-color-red' : 'initial'),
-        history: marketInfo[i]['7d_history_in_btc'],
+        //volume: (marketInfo[i]['24h_ohlc_in_via']['vol'] && marketInfo[i]['aggregated_price_in_via']) 
+        //  ? (smartFormat(marketInfo[i]['24h_ohlc_in_via']['vol'] * marketInfo[i]['aggregated_price_in_via'], 0, 4) + ' VIA') : '',
+        volume: (marketInfo[i]['24h_summary'] && marketInfo[i]['24h_summary']['vol'] && marketInfo[i]['aggregated_price_in_via']) 
+          ? (smartFormat(marketInfo[i]['24h_summary']['vol'] * marketInfo[i]['aggregated_price_in_via'], 10, 4) + ' VIA') : '',
+        pctChange: marketInfo[i]['24h_vol_price_change_in_via'] ? (smartFormat(marketInfo[i]['24h_vol_price_change_in_via'], 0, 2) + ' %') : '',
+        pctChangeColorClass: marketInfo[i]['24h_vol_price_change_in_via'] > 0 ? 'txt-color-green' : (marketInfo[i]['24h_vol_price_change_in_via'] < 0 ? 'txt-color-red' : 'initial'),
+        history: marketInfo[i]['7d_history_in_via'],
 
-        marketCapRaw: marketInfo[i]['market_cap_in_btc'],
-        priceRaw: marketInfo[i]['aggregated_price_as_btc'],
+        marketCapRaw: marketInfo[i]['market_cap_in_via'],
+        priceRaw: marketInfo[i]['aggregated_price_as_via'],
         supplyRaw: marketInfo[i]['total_supply'],
-        volumeRaw: marketInfo[i]['24h_ohlc_in_btc'] ? marketInfo[i]['24h_ohlc_in_btc']['vol'] : 0,
-        pctChangeRaw: marketInfo[i]['24h_vol_price_change_in_btc']
+        volumeRaw: marketInfo[i]['24h_ohlc_in_via'] ? marketInfo[i]['24h_ohlc_in_via']['vol'] : 0,
+        pctChangeRaw: marketInfo[i]['24h_vol_price_change_in_via']
       });
     }
     
@@ -130,11 +133,11 @@ var AssetLeaderboardViewModel = CClass.create(function() {
     self.generateAssetMiniCharts();
   }
   
-  self.showPortfolioInXCP = function() {
+  self.showPortfolioInxch = function() {
     self.showPortfolioIn("XCH");
   }
   
-  self.showPortfolioInBTC = function() {
+  self.showPortfolioInvia = function() {
     self.showPortfolioIn("VIA");
   }
   
