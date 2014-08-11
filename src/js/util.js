@@ -1,4 +1,5 @@
 function assert(condition, message) {
+  console.log("Asserting:", condition, "with message:", message)
   if (!condition) throw message || "Assertion failed";
 }
 
