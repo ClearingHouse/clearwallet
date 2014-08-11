@@ -133,7 +133,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a data-bind="visible: !$parent.IS_WATCH_ONLY, click: send" href="#">Send</a></li>
                     <li><a data-bind="visible: ASSET !== 'VIA' && ASSET !== 'XCH', click: showInfo" href="#">Show Info</a></li>
-                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: mainnetBurn" href="#">Burn for XCH</a></li>
+                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: testnetBurn" href="#">Burn for XCH</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: issueAdditional" href="#">Issue Additional</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine()"><a data-bind="click: transfer" href="#">Transfer Ownership</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: lock" href="#">Lock Token Issuance</a></li>
