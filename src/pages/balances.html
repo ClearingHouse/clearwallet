@@ -63,7 +63,8 @@
     Clearwallet lets you know this by displaying your actions under the <b>Pending Actions</b> panel (the Clock icon on the top bar), and then moving
     them to the <b>Notifications</b> panel (the Checkbox icon) automatically once the network has successfully confirmed them.
     You'll also see the future expected value in parenthesis next to the current balance to better alert you that the change is pending.
-    Note that depending on the speed at which blocks are solved, it could take anywhere from 2 to 40 minutes for your actions to be confirmed.<br/><br/>
+    Note that depending on the speed at which blocks are solved, it usually takes 24 seconds, but it could take a couple of minutes for your
+    actions to be confirmed.<br/><br/>
 </div>
 
 <div id="pendingBTCPayNotice" data-bind="fadeVisibleInOnly: needWarningOnExit()" class="alert alert-danger alert-block">
@@ -132,7 +133,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a data-bind="visible: !$parent.IS_WATCH_ONLY, click: send" href="#">Send</a></li>
                     <li><a data-bind="visible: ASSET !== 'VIA' && ASSET !== 'XCH', click: showInfo" href="#">Show Info</a></li>
-                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && USE_TESTNET && ASSET === 'VIA'"><a data-bind="click: testnetBurn" href="#">Burn for XCH</a></li>
+                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: mainnetBurn" href="#">Burn for XCH</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: issueAdditional" href="#">Issue Additional</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine()"><a data-bind="click: transfer" href="#">Transfer Ownership</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: lock" href="#">Lock Token Issuance</a></li>
@@ -447,13 +448,13 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Burn VIA for XCH (Testnet Only)</h4>
+        <h4 class="modal-title">Burn VIA for XCH</h4>
       </div>
       <div class="modal-body no-padding">
         <p class="formPadded">
-         Create XCH on Testnet by "burning" your test VIA. Please note that you can only burn up to <b>10000 VIA total</b> for any given address.<br/><br/>
-         <span data-bind="visible: 10000 - btcAlreadyBurned() > 0"><b>You may currently burn up to <span class="sellColor"><span data-bind="text: maxPossibleBurn()"></span> VIA</span> from this address.</b></span>
-         <span data-bind="visible: 10000 - btcAlreadyBurned() <= 0"><b class="errorColor">You have already burned the maximum allowed VIA from this address.</b></span>
+         Create XCH by "burning" your VIA. Please note that you can only burn up to <b>20000 VIA total</b> for any given address.<br/><br/>
+         <span data-bind="visible: 20000 - btcAlreadyBurned() > 0"><b>You may currently burn up to <span class="sellColor"><span data-bind="text: maxPossibleBurn()"></span> VIA</span> from this address.</b></span>
+         <span data-bind="visible: 20000 - btcAlreadyBurned() <= 0"><b class="errorColor">You have already burned the maximum allowed VIA from this address.</b></span>
        </p>
        <form class="smart-form" data-bind="submit: doAction"><fieldset>
           <section><div class="row">

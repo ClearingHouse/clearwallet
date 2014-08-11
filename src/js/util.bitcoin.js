@@ -133,9 +133,9 @@ function testnetBurnDetermineEarned(blockHeight, burned) {
   //burned is the quantity of BTC to burn (as a float -- normalized value)
   //XCP quantity returned is as a float -- normalized value
   burned = denormalizeQuantity(burned);
-  var total_time = TESTNET_BURN_END - TESTNET_BURN_START;
-  var partial_time = TESTNET_BURN_END - blockHeight;
-  var multiplier = 50 * (1 + 1 * (partial_time / total_time)); //will be approximate
+  var total_time = USE_TESTNET ? (TESTNET_BURN_END - TESTNET_BURN_START) : (MAINNET_BURN_END - MAINNET_BURN_START);
+  var partial_time = USE_TESTNET ? (TESTNET_BURN_END - blockHeight) : (MAINNET_BURN_END - blockHeight);
+  var multiplier = 100 * (0.85 + 0.15 * (partial_time / total_time)); //will be approximately 100 to 85 over period
   var earned = Decimal.round(new Decimal(burned).mul(multiplier), 8, Decimal.MidpointRounding.ToEven).toFloat();
   return normalizeQuantity(earned);
 }
