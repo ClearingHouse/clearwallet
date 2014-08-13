@@ -12,7 +12,7 @@ var MIN_FEE = 100000; // in draks (== .001 VIA)
 var REGULAR_DUST_SIZE = 56000;
 var MULTISIG_DUST_SIZE = 56000 * 2;
 var MIN_PRIME_BALANCE = 500000; //in draks ... == .005
-var ASSET_CREATION_FEE_XCP = 1; //in normalized XCP
+var ASSET_CREATION_FEE_XCP = 100; //in normalized XCP
 var MAX_ASSET_DESC_LENGTH = 41; //42, minus a null term character?
 var FEE_FRACTION_REQUIRED_DEFAULT_PCT = .9;   //0.90% of total order
 var FEE_FRACTION_PROVIDED_DEFAULT_PCT = 1;   //1.00% of total order
