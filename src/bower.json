@@ -32,7 +32,7 @@
         "typeahead.js": "0.10.2",
         "select2": "3.4.6",
         "font-awesome": "4.0.3",
-        "bitcore": "https://github.com/viacoin/viacore.git#f606dae9ade428a6cf47e25da16b1b15b69fb9d8",
+        "bitcore": "https://github.com/viacoin/viacore.git#655752c4428e05064293f7247d472ab031c24cdc",
         "mocha": "1.18.2",
         "chai": "1.9.1",
         "iso8601-js-period": "https://github.com/nezasa/iso8601-js-period.git#v0.2.0.0",
