@@ -674,7 +674,7 @@ function SweepModalViewModel() {
       destination: self.addressForPrivateKey(),
       quantity: self.missingBtcForFees,
       asset: 'VIA',
-      encoding: 'multisig',
+      encoding: 'auto',
       pubkey: pubkey,
       allow_unconfirmed_inputs: true
     };
@@ -732,7 +732,7 @@ function SweepModalViewModel() {
         destination: self.addressForPrivateKey(),
         quantity: self.btcBalanceForPrivateKey()-fees,
         asset: 'VIA',
-        encoding: 'multisig',
+        encoding: 'auto',
         pubkey: pubkey,
         allow_unconfirmed_inputs: true,
         fee: fees
@@ -806,7 +806,7 @@ function SweepModalViewModel() {
       call_date: selectedAsset.ASSET_INFO['call_date'] ? selectedAsset.ASSET_INFO['call_date'] : null,
       call_price: selectedAsset.ASSET_INFO['call_price'] ? parseFloat(selectedAsset.ASSET_INFO['call_price']) : null,
       transfer_destination: self.destAddress(),
-      encoding: 'multisig',
+      encoding: 'auto',
       pubkey: pubkey,
       allow_unconfirmed_inputs: true
     };
@@ -903,7 +903,7 @@ function SweepModalViewModel() {
       destination: self.destAddress(),
       quantity: quantity,
       asset: selectedAsset.ASSET,
-      encoding: 'multisig',
+      encoding: 'auto',
       pubkey: pubkey,
       allow_unconfirmed_inputs: true
     };
