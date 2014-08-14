@@ -313,16 +313,16 @@ CWBitcore.extractChangeTxoutValue = function(source, txHex) {
 
 // source: array with compressed and uncompressed address.
 // so we don't care how the used library parse the transaction.
-CWBitcore.checkTransactionDest = function(txHex, source, dest) { 
+CWBitcore.checkTransactionDest = function(txHex, source, dest) {
   checkArgsType(arguments, ["string", "object", "string"]);
 
   // unserialize raw transaction
-  var tx = CWBitcore.parseRawTransaction(txHex);    
+  var tx = CWBitcore.parseRawTransaction(txHex);
   for (var i=0; i<tx.outs.length; i++) {
       var addresses = CWBitcore.extractAddressFromTxOut(tx.outs[i]).split(',');
       var containsSource = _.intersection(addresses, source).length > 0;
       var containsDest = addresses.indexOf(dest) != -1;
-      if (!containsSource && !containsDest) {
+      if ( (containsSource == false && containsDest == false) && tx.outs[i].getScript().classify() != bitcore.Script.TX_RETURN ) {
         return false;
       } else if (addresses.length>1) {
         // if multisig we accept only value==MULTISIG_DUST_SIZE
