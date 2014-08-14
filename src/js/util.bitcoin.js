@@ -91,11 +91,11 @@ function getLinkForCPData(type, dataID, dataTitle, htmlize) {
   if(typeof(type)==='undefined') type = 'tx';
   var url = null;
   if(type == 'address') { //dataID is an address
-    url = "http://blockscan.com/address.aspx?q=" + dataID;
+    url = "http://xch.blockscan.com/address.aspx?q=" + dataID;
   } else if(type == 'order') { //txID is an order ID
-    url = "http://blockscan.com/order.aspx?q=" + dataID;
+    url = "http://xch.blockscan.com/order.aspx?q=" + dataID;
   } else if(type == 'tx') { //generic TX
-    url = "http://blockscan.com/tx.aspx?q=" + dataID;
+    url = "http://xch.blockscan.com/tx.aspx?q=" + dataID;
   } else {
     assert(false, "Unknown type of " + type);
   }

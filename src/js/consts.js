@@ -215,8 +215,8 @@ var BLOCKEXPLORER_URL = USE_TESTNET ? "http://testnet.explorer.viacoin.org" : "h
 var GOOGLE_ANALYTICS_UAID = null; //will be set in counterwallet.js
 var ROLLBAR_ACCESS_TOKEN = null; //will be set in counterwallet.js
 
-var TRANSACTION_DELAY = 5000 // delay between transaction to avoid error -22 (vin reused)
-var TRANSACTION_MAX_RETRY = 5 // max retry when transaction failed (don't include first transaction, so 3 retry means 4 queries)
+var TRANSACTION_DELAY = 5000; // delay between transaction to avoid error -22 (vin reused)
+var TRANSACTION_MAX_RETRY = 5; // max retry when transaction failed (don't include first transaction, so 3 retry means 4 queries)
 
 var DONATION_ADDRESS = USE_TESTNET ? 'tQpQvYmQi5Hx96cs98heEhf4qk2pH4oyKf' : 'VogSuqV7zyRdauncDL6WjtqFAvmEK5rVGn'; // testnet faucet
 
