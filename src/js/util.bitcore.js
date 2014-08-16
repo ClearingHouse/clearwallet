@@ -313,7 +313,7 @@ CWBitcore.extractChangeTxoutValue = function(source, txHex) {
 // source: array with compressed and uncompressed address.
 // so we don't care how the used library parse the transaction.
 // TODO: check the pubkey instead
-CWBitcore.checkTransactionDest = function(txHex, source, dest) { 
+CWBitcore.checkTransactionDest = function(txHex, source, dest) {
   checkArgsType(arguments, ["string", "object", "object"]);
 
   // unserialize raw transaction
@@ -321,7 +321,8 @@ CWBitcore.checkTransactionDest = function(txHex, source, dest) {
   for (var i=0; i<tx.outs.length; i++) {
       var addresses = CWBitcore.extractAddressFromTxOut(tx.outs[i]).split(',');
       var containsSource = _.intersection(addresses, source).length > 0;
-      var containsDest = addresses.indexOf(dest) != -1;
+      var containsDest = _.intersection(addresses, dest).length > 0;
+
       if ( (containsSource == false && containsDest == false) && tx.outs[i].getScript().classify() != bitcore.Script.TX_RETURN ) {
         return false;
       } else if (addresses.length>1) {
@@ -335,11 +336,10 @@ CWBitcore.checkTransactionDest = function(txHex, source, dest) {
 }
 
 CWBitcore.compareOutputs = function(source, txHexs) {
-  
-  var tx0 = CWBitcore.parseRawTransaction(txHexs[0]); 
+  var tx0 = CWBitcore.parseRawTransaction(txHexs[0]);
 
   for (var t = 1; t < txHexs.length; t++) {
-    var tx1 = CWBitcore.parseRawTransaction(txHexs[t]); 
+    var tx1 = CWBitcore.parseRawTransaction(txHexs[t]);
     if (tx1.outs.length != tx0.outs.length) {
       return false;
     }
