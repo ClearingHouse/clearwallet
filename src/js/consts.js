@@ -39,7 +39,7 @@ var CHAT_NUM_USERS_ONLINE_REFRESH_EVERY = 5 * 60 * 1000; //refresh online user c
 
 var NUM_BLOCKS_TO_WAIT_FOR_BTCPAY = 6; //number of blocks to wait until the user can make a BTCpay on an order match where they owe BTC
 
-var ALLOW_UNCONFIRMED_INPUTS = false;  // allow use unconfirmed unspents
+var ALLOW_UNCONFIRMED_INPUTS = true;  // allow use unconfirmed unspents
 
 var B26_DIGITS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
