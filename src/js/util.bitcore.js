@@ -106,7 +106,6 @@ CWHierarchicalKey.prototype.getQuickUrl = function(password) {
 }
 
 
-
 // priv: private key wif or hex
 var CWPrivateKey = function(priv) {
   checkArgType(priv, "string");
@@ -182,7 +181,7 @@ CWPrivateKey.prototype.signRawTransaction = function(unsignedHex) {
 }
 
 CWPrivateKey.prototype.checkTransactionDest = function(txHex, destAdress) {
-  checkArgsType(arguments, ["string", "string"]);
+  checkArgsType(arguments, ["string", "object"]);
   try {
     return CWBitcore.checkTransactionDest(txHex, this.getAddresses(), destAdress);
   } catch (err) {
@@ -191,7 +190,7 @@ CWPrivateKey.prototype.checkTransactionDest = function(txHex, destAdress) {
 }
 
 CWPrivateKey.prototype.checkAndSignRawTransaction = function(unsignedHex, destAdress) {
-  checkArgsType(arguments, ["string", "string"]);
+  checkArgsType(arguments, ["string", "object"]);
   if (this.checkTransactionDest(unsignedHex, destAdress)) {
     return this.signRawTransaction(unsignedHex);
   }
@@ -313,8 +312,9 @@ CWBitcore.extractChangeTxoutValue = function(source, txHex) {
 
 // source: array with compressed and uncompressed address.
 // so we don't care how the used library parse the transaction.
-CWBitcore.checkTransactionDest = function(txHex, source, dest) {
-  checkArgsType(arguments, ["string", "object", "string"]);
+// TODO: check the pubkey instead
+CWBitcore.checkTransactionDest = function(txHex, source, dest) { 
+  checkArgsType(arguments, ["string", "object", "object"]);
 
   // unserialize raw transaction
   var tx = CWBitcore.parseRawTransaction(txHex);
@@ -366,3 +366,8 @@ CWBitcore.decrypt = function(cryptedMessage, password) {
   return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(cryptedMessage, password));
 }
 
+CWBitcore.getQuickUrl = function(passphrase, password) {
+  var url = location.protocol + '//' + location.hostname + '/#cp=';
+  url += CWBitcore.encrypt(passphrase, password);
+  return url;
+}

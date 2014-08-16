@@ -231,7 +231,8 @@ function _getDestTypeFromMethod(method) {
       'record_btc_open_order', 'cancel_btc_open_order', 'get_bets', 'get_user_bets', 'get_feed', 'get_feeds_by_source',
       'parse_base64_feed', 'get_open_rps_count', 'get_user_rps', 
       'get_users_pairs', 'get_market_orders', 'get_market_trades', 'get_markets_list', 'get_market_details',
-      'get_pubkey_for_address', 'create_armory_utx', 'convert_armory_signedtx_to_raw_hex', 'create_support_case'].indexOf(method) >= 0) {
+      'get_pubkey_for_address', 'create_armory_utx', 'convert_armory_signedtx_to_raw_hex', 'create_support_case',
+      'get_escrowed_balances'].indexOf(method) >= 0) {
     destType = "clearblockd";
   }
   return destType;
@@ -241,7 +242,7 @@ function supportUnconfirmedChangeParam(method) {
   return method.split("_").shift()=="create" && _getDestTypeFromMethod(method)=="clearinghoused";
 }
 
-function _multiAPIPrimative(method, params, onFinished) {
+function multiAPIPrimative(method, params, onFinished) {
   /*Make request to all servers (parallelized), returning results from all servers into a list.
     (This is a primative and is not normally called directly outside of this module.)
   
@@ -315,7 +316,7 @@ function failoverAPI(method, params, onSuccess, onError) {
       bootbox.alert("failoverAPI: Call failed (failed over across all servers). Method: " + method + "; Last error: " + message);
     };
   }
-  //525 DETECTION (needed here and in _multiAPIPrimative) - wrap onError (so that this works even for user supplied onError)
+  //525 DETECTION (needed here and in multiAPIPrimative) - wrap onError (so that this works even for user supplied onError)
   onErrorOverride = function(jqXHR, textStatus, errorThrown, endpoint) {
     //detect a special case of all servers returning code 525, which would mean counterpartyd had a reorg and/or we are upgrading
     //TODO: this is not perfect in this failover case now because we only see the LAST error. We are currently assuming
@@ -350,7 +351,7 @@ function multiAPI(method, params, onSuccess, onError) {
     };
   }
 
-  _multiAPIPrimative(method, params, function(results) {
+  multiAPIPrimative(method, params, function(results) {
     //look for the first success and use that...
     for(var i=0; i < results.length; i++) {
       if(results[i]['success']) {
@@ -401,7 +402,7 @@ function multiAPIConsensus(method, params, onSuccess, onConsensusError, onSysErr
     };
   }
  
-  _multiAPIPrimative(method, params, function(results) {
+  multiAPIPrimative(method, params, function(results) {
     var successResults = [];
     var i = 0;
     for(i=0; i < results.length; i++) {
@@ -414,18 +415,14 @@ function multiAPIConsensus(method, params, onSuccess, onConsensusError, onSysErr
       return onSysError(results[i-1]['jqXHR'], results[i-1]['textStatus'], results[i-1]['errorThrown'], results[i-1]['endpoint']);
     }
     
-    if (!CWBitcore.compareOutputs(params['source'], successResults)) {
-      return onConsensusError(successResults); //not all consensus data matches
+    if(typeof successResults[0] === "string" && _.startsWith(successResults[0], ARMORY_OFFLINE_TX_PREFIX)) { //armory offline tx
+      if(_.uniq(successResults).length != 1)
+        return onConsensusError(successResults); //armory offline tx where not all consensus data matches
+    } else { //regular tx
+      assert(params['source']);
+      if (!CWBitcore.compareOutputs(params['source'], successResults))
+        return onConsensusError(successResults); //regular tx where not all consensus data matches
     }
-    //xnova(7-14-14): DISABLE CONSENSUS API CHECKING FOR NOW UNTIL WE FIX THE OCCASIONAL CONSENSUS ISSUES WE GET AND MAKE IT MORE RELIABLE
-    /*var consensusResult = null;
-    for(i=0; i < successResults.length; i++) {
-      if(i == 0) {
-        consensusResult = successResults[i];
-      } else if(successResults[i] != consensusResult) {
-        return onConsensusError(successResults); //not all consensus data matches
-      }
-    }*/
     
     //if here, all is well
     if(onSuccess) {
@@ -453,7 +450,7 @@ function multiAPINewest(method, params, newestField, onSuccess, onError) {
     };
   }
   
-  _multiAPIPrimative(method, params, function(results) {
+  multiAPIPrimative(method, params, function(results) {
     var successResults = [];
     var i = 0;
     for(i=0; i < results.length; i++) {

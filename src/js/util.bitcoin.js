@@ -13,6 +13,10 @@ function denormalizeQuantity(quantity, divisible) {
   //^ we have the quantity !== 0 check due to a bug in Decimal (https://github.com/hiroshi-manabe/JSDecimal/issues/2)
 }
 
+function roundAmount(amount) {
+  return Decimal.round(new Decimal(amount), 8, Decimal.MidpointRounding.ToEven).toString();
+}
+
 function addFloat(floatA, floatB) {
   var a = new Decimal(floatA);
   var b = new Decimal(floatB);
@@ -51,25 +55,24 @@ function smartFormat(num, truncateDecimalPlacesAtMin, truncateDecimalPlacesTo) {
   return numberWithCommas(noExponents(num));
 }
 
-//TODO: refactor with a "currencies" list in conf
 function assetsToAssetPair(asset1, asset2) {
   //NOTE: This MUST use the same logic/rules as counterblockd's assets_to_asset_pair() function in lib/util.py
   var base = null;
   var quote = null;
-  
-  if(asset1 == 'VIA' || asset2 == 'VIA') {
-      base = asset1 == 'VIA' ? asset2 : asset1;
-      quote = asset1 == 'VIA' ? asset1 : asset2;
-  } else if(asset1 == 'XCH' || asset2 == 'XCH') {
-      base = asset1 == 'XCH' ? asset2 : asset1;
-      quote = asset1 == 'XCH' ? asset1 : asset2;
-  } else if(asset1 == 'XVIA' || asset2 == 'XVIA') {
-      base = asset1 == 'XVIA' ? asset2 : asset1;
-      quote = asset1 == 'XVIA' ? asset1 : asset2;
-  } else  {
-      base = asset1 < asset2 ? asset1 : asset2;
-      quote = asset1 < asset2 ? asset2 : asset1;
+
+  for (var i in QUOTE_ASSETS) {
+    if (asset1 == QUOTE_ASSETS[i] || asset2 == QUOTE_ASSETS[i]) {
+      base = asset1 == QUOTE_ASSETS[i] ? asset2 : asset1;
+      quote = asset1 == QUOTE_ASSETS[i] ? asset1 : asset2;
+      break;
+    }
   }
+
+  if (!base) {
+    base = asset1 < asset2 ? asset1 : asset2;
+    quote = asset1 < asset2 ? asset2 : asset1;
+  }
+  
   return [base, quote];
 }
 
