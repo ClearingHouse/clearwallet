@@ -133,7 +133,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a data-bind="visible: !$parent.IS_WATCH_ONLY, click: send" href="#">Send</a></li>
                     <li><a data-bind="visible: ASSET !== 'VIA' && ASSET !== 'XCH', click: showInfo" href="#">Show Info</a></li>
-                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: testnetBurn" href="#">Burn for XCH</a></li>
+                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: testnetBurn" href="#">Convert to XCH</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: issueAdditional" href="#">Issue Additional</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine()"><a data-bind="click: transfer" href="#">Transfer Ownership</a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: lock" href="#">Lock Token Issuance</a></li>
@@ -449,17 +449,17 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" data-bind="click: hide" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Burn VIA for XCH</h4>
+        <h4 class="modal-title">Convert VIA to XCH</h4>
       </div>
       <div class="modal-body no-padding">
         <p class="formPadded">
-         Create XCH by "burning" your VIA. Please note that you can only burn up to <b>20000 VIA total</b> for any given address.<br/><br/>
-         <span data-bind="visible: 20000 - btcAlreadyBurned() > 0"><b>You may currently burn up to <span class="sellColor"><span data-bind="text: maxPossibleBurn()"></span> VIA</span> from this address.</b></span>
-         <span data-bind="visible: 20000 - btcAlreadyBurned() <= 0"><b class="errorColor">You have already burned the maximum allowed VIA from this address.</b></span>
+         Create XCH by converting your VIA. Please note that you can only convert up to <b>20000 VIA total</b> for any given address.<br/><br/>
+         <span data-bind="visible: 20000 - btcAlreadyBurned() > 0"><b>You may currently convert up to <span class="sellColor"><span data-bind="text: maxPossibleBurn()"></span> VIA</span> from this address.</b></span>
+         <span data-bind="visible: 20000 - btcAlreadyBurned() <= 0"><b class="errorColor">You have already converted the maximum allowed VIA from this address.</b></span>
        </p>
        <form class="smart-form" data-bind="submit: doAction"><fieldset>
           <section><div class="row">
-            <label class="control-label col col-sm-2">VIA to Burn</label>
+            <label class="control-label col col-sm-2">VIA to Convert</label>
             <div class="col col-sm-10">
                 <label class="input"><i class="icon-append fa fa-fire"></i>
                     <input name="additionalIssue" data-bind="value: btcBurnQuantity, valueUpdate: 'input'" type="text"/>
@@ -468,13 +468,13 @@
           </div></section>
         </fieldset></form>
         <p class="formPaddedBot bold" data-bind="fadeVisibleInOnly: validationModel.isValid()">
-            After burning, you will have approximately
-            <b class="buyColor"><span data-bind="text: dispQuantityXCPToBeCreated"></span> XCH</b> created at this address.
+            After converting, you will have approximately
+            <b class="buyColor"><span data-bind="text: dispQuantityXCPToBeCreated"></span> XCH</b> at this address.
         </p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
-        <button type="button" data-bind="click: submitForm" class="btn btn-success">Burn</button>
+        <button type="button" data-bind="click: submitForm" class="btn btn-success">Convert</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
