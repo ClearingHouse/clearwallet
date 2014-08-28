@@ -37,7 +37,7 @@ var MARKET_INFO_REFRESH_EVERY = 2 * 60 * 1000; //refresh market info every 5 min
 
 var CHAT_NUM_USERS_ONLINE_REFRESH_EVERY = 5 * 60 * 1000; //refresh online user count every 5 minutes while enabled
 
-var NUM_BLOCKS_TO_WAIT_FOR_BTCPAY = 6; //number of blocks to wait until the user can make a BTCpay on an order match where they owe BTC
+var NUM_BLOCKS_TO_WAIT_FOR_BTCPAY = 10; //number of blocks to wait until the user can make a BTCpay on an order match where they owe BTC
 
 var ALLOW_UNCONFIRMED_INPUTS = true;  // allow use unconfirmed unspents
 
