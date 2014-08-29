@@ -896,7 +896,7 @@ function ExchangeViewModel() {
   self.cancelOrder = function(order) {
     $.jqlog.debug(order);
 
-    var message = 'Requests to cancel an order will still consume BTC (necessary to pay the Viacoin miner fee). To avoid this, let your order expire naturally.';
+    var message = 'Requests to cancel an order will still consume VIA (necessary to pay the Viacoin miner fee). To avoid this, let your order expire naturally.';
     if (self.quoteAsset() == 'VIA' && order.type == 'BUY') {
       message += '<br />We recommend to use XCH for your next trades! It\'s faster, cheaper, and you don\'t have to stay logged in.';
     }
