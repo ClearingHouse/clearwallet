@@ -82,7 +82,9 @@ var ENTITY_NAMES = {
   'rps_matches': 'RPS Match',
   'rpsresolves': 'RPS Confirmed',
   'rps_expirations': 'RPS Expired',
-  'rps_match_expirations': 'RPS Match Expired'
+  'rps_match_expirations': 'RPS Match Expired',
+  'documents': 'Notary transaction',
+  'notary_transfers': 'Notary transaction',
 };
 
 var ENTITY_ICONS = {
@@ -108,7 +110,10 @@ var ENTITY_ICONS = {
   'rps_matches': 'fa-trophy',
   'rpsresolves': 'fa-trophy',
   'rps_expirations': 'fa-trophy',
-  'rps_match_expirations': 'fa-trophy'
+  'rps_match_expirations': 'fa-trophy',
+  'notarys': 'fa-file-text-o',
+  'documents': 'fa-file-text-o',
+  'notary_transfers': 'fa-file-text-o'
 };
 
 var ENTITY_NOTO_COLORS = {
@@ -134,7 +139,10 @@ var ENTITY_NOTO_COLORS = {
   'rps_matches': 'bg-color-blueLight',
   'rpsresolves': 'bg-color-blue',
   'rps_expirations': 'bg-color-blueLight',
-  'rps_match_expirations': 'bg-color-blueLight'
+  'rps_match_expirations': 'bg-color-blueLight',
+  'notarys': 'bg-color-green',
+  'documents': 'bg-color-green',
+  'notary_transfers': 'bg-color-green'
 };
 
 var BET_TYPES = {

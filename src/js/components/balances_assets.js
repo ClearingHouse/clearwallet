@@ -948,7 +948,6 @@ function CreateDocumentModalViewModel() {
     }
   }
   self.submitForm = function() {
-    console.log('submitting')
     if (!self.validationModel.isValid()) {
       self.validationModel.errors.showAllMessages();
       return false;

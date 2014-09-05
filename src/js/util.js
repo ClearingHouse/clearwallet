@@ -404,6 +404,12 @@ function genRandom() {
 
   return /*Crypto.util.*/bytesToHex(random);
 }
+function truncate(str, length){
+  if(length == undefined){
+    length = 16
+  }
+  return str.substring(0,length) + "..."
+}
 
 function doubleHash(hexstr) {
   return bitcore.util.sha256(bitcore.util.sha256(/*Crypto.util.*/hexToBytes(hexstr))).toString('hex');

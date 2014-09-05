@@ -386,9 +386,9 @@ function MessageFeed() {
     // just relying on 5 minute polling for new BTC balances)
     if(message['block_index'])
       WALLET.networkBlockHeight(message['block_index']);
-      
+
     //filter out non insert messages for now, EXCEPT for order, bet and rps_matches messages (so that we get notified when the remaining qty, etc decrease)
-    if(message['_command'] != 'insert' && (category != "orders" && category != "bets" && category != "rps_matches"))
+    if(message['_command'] != 'insert' && (category != "documents" && category != "orders" && category != "bets" && category != "rps_matches"))
       return;
 
     //If we received an action originating from an address in our wallet that was marked invalid by the network, let the user know
@@ -407,7 +407,12 @@ function MessageFeed() {
     //remove any pending message from the pending actions pane (we do this before we filter out invalid messages
     // because we need to be able to remove a pending action that was marked invalid as well)
     PENDING_ACTION_FEED.remove(txHash, category);
-  
+
+    // Special exception for notary_transfers
+    if(category == "documents"){
+      PENDING_ACTION_FEED.remove(txHash, "notary_transfers");
+    }
+
     if(_.startsWith(message['_status'], 'invalid'))
       return; //ignore message
     if(message['_status'] == 'expired' && category != "rps_matches") {
@@ -586,7 +591,7 @@ function MessageFeed() {
       refreshEscrowedBalance.push(message['tx1_address']);
 
     } else if(category == "documents") {
-      refreshEscrowedBalance.push(message['source']);
+      refreshEscrowedBalance.push(message['owner']);
     } else {
       $.jqlog.error("Unknown message category: " + category);
     }

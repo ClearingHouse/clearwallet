@@ -160,7 +160,7 @@ function initBalances() {
   ko.applyBindings(CALL_ASSET_MODAL, document.getElementById("callAssetModal"));
   ko.applyBindings(SHOW_ASSET_INFO_MODAL, document.getElementById("showAssetInfoModal"));
   ko.applyBindings(CREATE_DOCUMENT_MODAL, document.getElementById("createDocumentModal"));
-  
+
   $(document).ready(function() {
       //Some misc jquery event handlers
       $('#createAddress, #createWatchOnlyAddress, #createArmoryOfflineAddress').click(function(e) {
