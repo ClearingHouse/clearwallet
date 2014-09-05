@@ -141,7 +141,7 @@ function initBalances() {
       FEATURE_STATS: disabledFeatures.indexOf('stats') == -1
     }, document.getElementById("left-panel"));
   }
-    
+
   //balances_assets.js
   window.CREATE_ASSET_MODAL = new CreateAssetModalViewModel();
   window.ISSUE_ADDITIONAL_ASSET_MODAL = new IssueAdditionalAssetModalViewModel();
@@ -150,7 +150,8 @@ function initBalances() {
   window.PAY_DIVIDEND_MODAL = new PayDividendModalViewModel();
   window.CALL_ASSET_MODAL = new CallAssetModalViewModel();
   window.SHOW_ASSET_INFO_MODAL = new ShowAssetInfoModalViewModel();
-  
+  window.CREATE_DOCUMENT_MODAL = new CreateDocumentModalViewModel();
+
   ko.applyBindings(CREATE_ASSET_MODAL, document.getElementById("createAssetModal"));
   ko.applyBindings(ISSUE_ADDITIONAL_ASSET_MODAL, document.getElementById("issueAdditionalAssetModal"));
   ko.applyBindings(TRANSFER_ASSET_MODAL, document.getElementById("transferAssetModal"));
@@ -158,6 +159,7 @@ function initBalances() {
   ko.applyBindings(PAY_DIVIDEND_MODAL, document.getElementById("payDividendModal"));
   ko.applyBindings(CALL_ASSET_MODAL, document.getElementById("callAssetModal"));
   ko.applyBindings(SHOW_ASSET_INFO_MODAL, document.getElementById("showAssetInfoModal"));
+  ko.applyBindings(CREATE_DOCUMENT_MODAL, document.getElementById("createDocumentModal"));
   
   $(document).ready(function() {
       //Some misc jquery event handlers
@@ -168,15 +170,15 @@ function initBalances() {
           return false;
         }
 
-        var addressType = 'normal';        
+        var addressType = 'normal';
         if($(this).attr('id') == 'createWatchOnlyAddress')
-          addressType = 'watch'; 
+          addressType = 'watch';
         else if($(this).attr('id') == 'createArmoryOfflineAddress')
-          addressType = 'armory'; 
+          addressType = 'armory';
         CREATE_NEW_ADDRESS_MODAL.show(addressType);
         e.preventDefault(); //prevent the location hash from changing
       });
-      
+
       $('#sweepFunds, #sweepFunds2').click(function() {
         SWEEP_MODAL.show(true, false);
       });
@@ -427,3 +429,12 @@ function initRPS() {
   RPS.init();
 }
 INIT_FUNC['pages/rps.html'] = initRPS;
+
+function initDocuments() {
+  pageSetUp();
+  window.DOCUMENTS = new DocumentViewModel();
+  ko.applyBindings(DOCUMENTS, document.getElementById("documents"));
+
+  DOCUMENTS.init();
+}
+INIT_FUNC['pages/documents.html'] = initDocuments;

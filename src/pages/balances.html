@@ -113,11 +113,12 @@
                         </ul>
                   </li>                  
 
-                  <li class="divider"></li><li class="dropdown-header">Issuance...</li>                 
-                  <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: createAsset" href="#">Create a Token (Asset)</a></li>                
+                  <li class="divider"></li><li class="dropdown-header">Issuance...</li>
+                  <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: createAsset" href="#">Create a Token (Asset)</a></li>
+                  <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: createDocument" href="#">Create a notary Document</a></li>
                   <li data-bind="visible: !IS_WATCH_ONLY && FEATURE_DIVIDEND"><a data-bind="click: payDividend" href="#">Pay Distribution</a></li>
 
-                  <li class="divider"></li><li class="dropdown-header">Betting...</li>  
+                  <li class="divider"></li><li class="dropdown-header">Betting...</li>
                   <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: broadcast" href="#">Feed Broadcast</a></li>
                 </ul>
               </div>
@@ -506,6 +507,67 @@
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<!-- modal for issuing document for notary -->
+<div data-bind="showModal: shown" id="createDocumentModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="createDocumentModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Create a notary Document</h4>
+      </div><!-- end header -->
+
+      <div class="modal-body">
+        <form class="smart-form" action="" data-bind="submit: doAction">
+          <section><div class="row">
+            <label class="control-label col col-sm-2">For Address</label>
+            <div class="col col-sm-10">
+                <label class="input"><i class="icon-append fa fa-user"></i>
+                    <input name="assetAddress" data-bind="value: address" type="text" disabled="disabled"/>
+                </label>
+                <div class="note">The address the token will be created on.</div>
+            </div>
+          </div></section>
+          <section>
+          <div class="row">
+            <label class="control-label col col-sm-2">Document</label>
+            <div class="col col-sm-10">
+              <label class="input"><i class="icon-append fa fa-file-o"></i>
+                <input name="documentFile" data-bind="event: { change: doHash}" type="file"/>
+              </label>
+              <div class="note">The hash will be calculated automatically and client-side.</div>
+            </div>
+          </div>
+          </section>
+          <section>
+          <div class="row">
+            <label class="control-label col col-sm-2">Document hash</label>
+            <div class="col col-sm-10">
+              <label class="input"><i class="icon-append fa fa-key"></i>
+                <input id="documentHash" name="documentHash" data-bind="value: documentHash" type="input" disabled=disabled/>
+              </label>
+            </div>
+          </div>
+          </section>
+          <section>
+          <div class="row">
+            <label class="control-label col col-sm-2">Description</label>
+            <div class="col col-sm-10">
+              <label class="input"><i class="icon-append fa fa-info"></i>
+                <input name="documentDescription" data-bind="value: documentDescription" type="text"/>
+              </label>
+              <div class="note">Optional (public) description for this document.</div>
+            </div>
+          </div>
+          </section>
+        </form>
+      </div><!-- close modal-body -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+        <button type="button" data-bind="click: submitForm" class="btn btn-primary">Create Document</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- modal for create asset -->
 <div data-bind="showModal: shown" id="createAssetModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="createAssetModal" aria-hidden="true">

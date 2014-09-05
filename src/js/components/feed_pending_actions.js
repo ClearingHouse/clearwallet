@@ -96,6 +96,8 @@ PendingActionViewModel.calcText = function(category, data) {
       desc = "Waiting <Am>" + numberWithCommas(normalizeQuantity(data['backward_quantity'])) + "</Am> <As>VIA</As> payment from <Ad>" + getAddressLabel(data['tx1_address']) + "</Ad>";
     }
 
+  } else if(category == 'notarys') {
+    desc  = "Document hash " + data['hash_string'] + " pending for address <Ad>" + getAddressLabel(data['source']) + "</Ad>";
   } else {
     desc = "UNHANDLED TRANSACTION CATEGORY";
   }
@@ -112,7 +114,7 @@ function PendingActionFeedViewModel() {
   self.entries = ko.observableArray([]); //pending actions beyond pending BTCpays
   self.lastUpdated = ko.observable(new Date());
   self.ALLOWED_CATEGORIES = [
-    'sends', 'orders', 'issuances', 'broadcasts', 'bets', 'dividends', 'burns', 'cancels', 'callbacks', 'btcpays', 'rps', 'rpsresolves', 'order_matches'
+    'sends', 'orders', 'issuances', 'broadcasts', 'bets', 'dividends', 'burns', 'cancels', 'callbacks', 'btcpays', 'rps', 'rpsresolves', 'order_matches', 'notarys'
     //^ pending actions are only allowed for these categories
   ];
   

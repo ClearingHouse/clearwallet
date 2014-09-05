@@ -585,6 +585,8 @@ function MessageFeed() {
       refreshEscrowedBalance.push(message['tx0_address']);
       refreshEscrowedBalance.push(message['tx1_address']);
 
+    } else if(category == "documents") {
+      refreshEscrowedBalance.push(message['source']);
     } else {
       $.jqlog.error("Unknown message category: " + category);
     }

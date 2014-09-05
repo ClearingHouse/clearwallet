@@ -234,6 +234,12 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
     ARMORY_BROADCAST_TRANSACTION.show(self.ADDRESS);
   }
 
+  self.createDocument = function(){
+    if(!WALLET.canDoTransaction(self.ADDRESS)) return false;
+
+    CREATE_DOCUMENT_MODAL.show(self.ADDRESS);
+  }
+
   self.createAsset = function() {
     if(!WALLET.canDoTransaction(self.ADDRESS)) return false;
 

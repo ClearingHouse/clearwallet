@@ -14,7 +14,7 @@ function RpsViewModel() {
       },
       message: 'Wager entered exceeds the address balance.',
       params: self
-    }    
+    }
   }
 
   var defaul_wagers = [
@@ -39,7 +39,7 @@ function RpsViewModel() {
 
   self.wagers = ko.observableArray(0);
   self.move = ko.observable(null);
-  
+
   self.playLabel = ko.observable('');
   self.myGames = ko.observableArray(null);
   self.possibleMoves = ko.observable(3);
@@ -171,7 +171,7 @@ function RpsViewModel() {
 
       if ((data[i]['status'] == 'pending' && data[i]['move'] == 0) || data[i]['status'] == 'open') {
         displayWarning = true;
-      } 
+      }
       var game = {};
 
       game['status_html'] = '<span class="label label-'+classes[data[i]['status']]+'">'+data[i]['status']+'</span>';
