@@ -26,6 +26,7 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
   self.numPrimedTxouts = ko.observable(null);
   //^ # of unspent txouts for this address fitting our criteria, or null if unknown (e.g. insight is down/not responding)
   self.numPrimedTxoutsIncl0Confirms = ko.observable(null);
+  self.withMovement = ko.observable(false);
 
   self.assets = ko.observableArray([
     new AssetViewModel({address: address, asset: "VIA"}), //will be updated with data loaded from insight
@@ -118,10 +119,10 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
       self.assets.push(new AssetViewModel(assetProps)); //add new
       setTimeout(function() {
 
-        $('#address-wid-' + self.ADDRESS + ' .dropdown-toggle').last().dropdown();
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .dropdown-toggle').last().dropdown();
 
-        $('#address-wid-' + self.ADDRESS + ' .asset-item:last-child .assetBtn').unbind('click');
-        $('#address-wid-' + self.ADDRESS + ' .asset-item:last-child .assetBtn').click(function (event) {
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .assetBtn').unbind('click');
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .assetBtn').click(function (event) {
           var menu = $(this).parent().find('ul');
           if (menu.css('display')=='block') {
             menu.hide();
