@@ -278,12 +278,15 @@ function LogonViewModel() {
       WALLET.isOldWallet(WALLET.BITCOIN_WALLET.useOldHierarchicalKey);
       //kick off address generation (we have to take this hacky approach of using setTimeout, otherwise the
       // progress bar does not update correctly through the HD wallet build process....)
-      setTimeout(function() { self.genAddress(mustSavePreferencesToServer) }, 1);
+      setTimeout(function() { self.genAddress(mustSavePreferencesToServer, PREFERENCES['num_addresses_used']) }, 1);
   }
   
-  self.genAddress = function(mustSavePreferencesToServer) {
-    var moreAddresses = [], i = null;
-    for (i = 0; i < LOGIN_ADDRESS_GEN_BATCH_SIZE; i++) {
+  self.genAddress = function(mustSavePreferencesToServer, addressCount) {
+    
+    var moreAddresses = [];
+
+    for (var i = 0; i < addressCount; i++) {
+
       var address = WALLET.addAddress('normal');
       var addressHash = hashToB64(address);
       var len = WALLET.addresses().length;
@@ -296,37 +299,39 @@ function LogonViewModel() {
 
       $.jqlog.info("Address discovery: Generating address " + len + " of " + PREFERENCES['num_addresses_used']
         + " (num_addresses_used) (" + self.walletGenProgressVal() + "%) -- " + address);
+      
       if(len <= PREFERENCES['num_addresses_used']) { //for visual effect
         var progress = len * (100 / PREFERENCES['num_addresses_used']);
         self.walletGenProgressVal(progress);
       }
+
     }
 
-    //if all addresses in the batch are utilized, then generate another batch
     WALLET.refreshBTCBalances(false, moreAddresses, function() {
-      var generateAnotherBatch = true;
-      for (i = moreAddresses.length - 1; i >= 0; i--) {
-        if(!WALLET.getAddressObj(moreAddresses[i]).withMovement()) { //no movement on this address...remove it
-          assert(WALLET.addresses()[WALLET.addresses().length - 1].ADDRESS == moreAddresses[i]);
-          if(WALLET.addresses().length > DEFAULT_NUM_ADDRESSES) {
-            $.jqlog.info("Address discovery: Address " + moreAddresses[i] + " unused. Trimming...");
-            WALLET.addresses.pop(); //remove this address
-          } else {
-            $.jqlog.info("Address discovery: Address " + moreAddresses[i] + " unused, but kept as an initial address.");
-          }
-          generateAnotherBatch = false;
-        }
+      
+      var generateAnotherAddress = false;
+      var totalAddresses = WALLET.addresses().length;
+      var lastAddressWithMovement = WALLET.addresses()[totalAddresses - 1].withMovement();
+
+      if (lastAddressWithMovement) {
+        generateAnotherAddress = true;
+      } else if (totalAddresses > PREFERENCES['num_addresses_used'] && !lastAddressWithMovement) {
+        WALLET.addresses.pop();
       }
        
-      if(generateAnotherBatch) {
-        $.jqlog.info("Address discovery: Generating another batch of " + LOGIN_ADDRESS_GEN_BATCH_SIZE + " addresses...");
-        setTimeout(function() { self.genAddress(mustSavePreferencesToServer) }, 1);
-      } else { //last used address processed as part of this batch
+      if (generateAnotherAddress) {
+
+        $.jqlog.info("Address discovery: Generating another address...");
+        setTimeout(function() { self.genAddress(mustSavePreferencesToServer, 1) }, 1);
+
+      } else {
+
         if (PREFERENCES['num_addresses_used'] != WALLET.addresses().length) {
           PREFERENCES['num_addresses_used'] = WALLET.addresses().length;
           mustSavePreferencesToServer = true;
         }
         return self.openWalletPt3(mustSavePreferencesToServer);
+
       }
     });
   }
@@ -343,14 +348,22 @@ function LogonViewModel() {
     //add in the armory and watch only addresses
     var additionalBTCAddresses = [], i = null;
     for(i=0; i < PREFERENCES['armory_offline_addresses'].length; i++) {
-      WALLET.addAddress('armory',
-        PREFERENCES['armory_offline_addresses'][i]['address'],
-        PREFERENCES['armory_offline_addresses'][i]['pubkey_hex']);
-      additionalBTCAddresses.push(PREFERENCES['armory_offline_addresses'][i]['address']);
+      try {
+        WALLET.addAddress('armory',
+          PREFERENCES['armory_offline_addresses'][i]['address'],
+          PREFERENCES['armory_offline_addresses'][i]['pubkey_hex']);
+        additionalBTCAddresses.push(PREFERENCES['armory_offline_addresses'][i]['address']);
+      } catch(e) {
+        $.jqlog.error("Could not generate armory address: " + e);
+      }
     }
     for(i=0; i < PREFERENCES['watch_only_addresses'].length; i++) {
-      WALLET.addAddress('watch', PREFERENCES['watch_only_addresses'][i]);
-      additionalBTCAddresses.push(PREFERENCES['watch_only_addresses'][i]);
+      try {
+        WALLET.addAddress('watch', PREFERENCES['watch_only_addresses'][i]);
+        additionalBTCAddresses.push(PREFERENCES['watch_only_addresses'][i]);
+      } catch(e) {
+        $.jqlog.error("Could not generate watch only address: " + e);
+      }
     }
     
     //store the preferences on the server(s) for future use
