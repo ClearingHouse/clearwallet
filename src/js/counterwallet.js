@@ -287,14 +287,8 @@ $(document).ready(function() {
         url: 'http://www.opera.com/download/'
       }      
     },
-<<<<<<< HEAD
-    header: 'Your browser is not supported with Clearwallet',
-    paragraph1: "Clearwallet's security features require a newer browser than what you are using. We recommend Chrome for the best user experience."
-      + " Also, note that Microsoft Internet Explorer is not supported due to it's lack of full support for Content-Security-Policy restrictions.",
-=======
     header: i18n.t('brower_not_supported_header'),
     paragraph1: i18n.t("brower_not_supported_text"),
->>>>>>> upstream/master
     close: false,
     closeESC: false
   });
