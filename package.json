@@ -2,7 +2,7 @@
   "name": "clearwallet",
   "description": "Clearwallet",
   "author": "Counterparty and ClearingHouse development teams",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "build/index.html",
   "repository": { 
     "type" : "git",
@@ -17,7 +17,8 @@
     "clean-css": "2.1.8",
     "mocha": "1.18.2",
     "chai": "=1.9.1",
-    "grunt-chrome-compile": "0.2.2"
+    "grunt-chrome-compile": "0.2.2",
+    "transifex": "1.4.2"
   },
   "scripts": {
     "prepublish": "grunt"
