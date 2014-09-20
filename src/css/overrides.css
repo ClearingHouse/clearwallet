@@ -4,6 +4,11 @@
  * FORM STYLING OVERRIDES (we have to redo these because we do forms a bit
  * differently than SmartAdmin does, due to our use of knockout)
  */
+
+.body{
+  height:auto !important;
+}
+
 .smart-form span.invalid {
     display: block;
     margin-top: 6px;
