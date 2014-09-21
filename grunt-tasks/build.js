@@ -404,7 +404,7 @@ module.exports = function(grunt) {
         var credential = grunt.file.read(homePath + '.transifex').trim();
         var Transifex = require('transifex');
         var transifex = new Transifex({
-            project_slug: 'counterwallet',
+            project_slug: 'clearwallet',
             credential: credential // In the same format
         });
         
@@ -418,7 +418,7 @@ module.exports = function(grunt) {
         }
 
         var downloadLang = function(lang) {
-            transifex.translationInstanceMethod('counterwallet', 'translationjson', lang, function(err, data) {
+            transifex.translationInstanceMethod('clearwallet', 'translationjson', lang, function(err, data) {
                 if (err) {
                     throw new Error("Error during translation.json download: " + err.message);
                 } else {
