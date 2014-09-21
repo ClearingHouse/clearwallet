@@ -179,7 +179,7 @@ function TransactionHistoryItemViewModel(data) {
         smartFormat(normalizeQuantity(self.DATA['backward_quantity'], self.DATA['_backward_asset_divisible'])),
         self.DATA['backward_asset']);
       if(self.DATA['forward_asset'] == 'VIA' || self.DATA['backward_asset'] == 'VIA') {
-        desc += " <b>(" + i18n.t("pending BTCpay") + ")</b>";
+        desc += " <b>(" + i18n.t("pending VIApay") + ")</b>";
       }
     } else if(self.RAW_TX_TYPE == 'btcpays') {
       desc = i18n.t("hist_btcpay", smartFormat(normalizeQuantity(self.DATA['btc_amount'])));

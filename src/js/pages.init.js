@@ -126,7 +126,7 @@ function initBalances() {
   ko.applyBindings({}, document.getElementById("alertBuyXcp"));
   ko.applyBindings({}, document.getElementById("gettingStartedNotice"));
   ko.applyBindings({}, document.getElementById("pendingBTCPayNotice"));
-  document.getElementById("oldWalletDetectedNotice") && ko.applyBindings({}, document.getElementById("oldWalletDetectedNotice"));
+  ko.applyBindings({}, document.getElementById("oldWalletDetectedNotice"));
   
   ko.applyBindings(CHANGE_ADDRESS_LABEL_MODAL, document.getElementById("changeAddressLabelModal"));
   ko.applyBindings(CREATE_NEW_ADDRESS_MODAL, document.getElementById("createNewAddressModal"));

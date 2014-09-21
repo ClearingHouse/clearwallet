@@ -220,7 +220,7 @@ AssetLeaderboardViewModel.formulateExtendedAssetInfo = function(asset, hasImage,
   var dispAsset = asset;
   if(asset == 'XCH' || asset == 'VIA') {
     dispAsset = '<img src="assets/' + asset + '.png" />&nbsp;';
-    var website = asset == 'XCH' ? "http://clearinghouse.cc" : "http://viacoin.org";
+    var website = asset == 'XCH' ? "http://clearinghouse.io" : "http://viacoin.org";
     dispAsset += '<a href="' + website + '" target="_blank">' + asset + '</a>';
   } else if(hasImage) {
     dispAsset = '<img src="' + (USE_TESTNET ? '/_t_asset_img/' : '/_asset_img/') + asset + '.png" />&nbsp;';
