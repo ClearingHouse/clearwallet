@@ -44,7 +44,7 @@ function WalletViewModel() {
       //see if there's a label already for this address that's stored in PREFERENCES, and use that if so
       var addressHash = hashToB64(address);
       //^ we store in prefs by a hash of the address so that the server data (if compromised) cannot reveal address associations
-      var label = PREFERENCES.address_aliases[addressHash] || "My Address #" + (i + 1);
+      var label = PREFERENCES.address_aliases[addressHash] || i18n.t("default_address_label", (i + 1));
       //^ an alias is made when a watch address is made, so this should always be found
   
       self.addresses.push(new AddressViewModel(type, key, address, label)); //add new
@@ -55,7 +55,7 @@ function WalletViewModel() {
       //a label should already exist for the address in PREFERENCES.address_aliases by the time this is called
       assert(!self.getAddressObj(address), "Cannot addAddress: watch/armory address already exists in wallet!");
       var addressHash = hashToB64(address);
-      var label = PREFERENCES.address_aliases[addressHash] || "UNKNOWN LABEL";
+      var label = PREFERENCES.address_aliases[addressHash] || i18n.t("unknown_label");
   
       self.addresses.push(new AddressViewModel(type, null, address, label, armoryPubKey)); //add new
       $.jqlog.debug("Watch-only or armory wallet address added: " + address + " -- hash: "
@@ -110,7 +110,7 @@ function WalletViewModel() {
     var assetObj = addressObj.getAssetObj(asset);
     if(!assetObj) return 0; //asset not in wallet
     if (asset != 'VIA') {
-      return normalized ? assetObj.normalizedBalance() : assetObj.rawBalance();
+      return normalized ? assetObj.availableBalance() : assetObj.rawAvailableBalance();
     } else {
       var bal = assetObj.normalizedBalance() + assetObj.unconfirmedBalance();
       return normalized ? bal : denormalizeQuantity(bal);
@@ -282,7 +282,8 @@ function WalletViewModel() {
         $.jqlog.debug("Got initial balances: " + JSON.stringify(balancesData));
         
         if(!balancesData.length)
-          return onSuccess(); //user has no balance (i.e. first time logging in)
+          if (onSuccess) return onSuccess(); //user has no balance (i.e. first time logging in)
+          else return;
         
         var i = null, j = null;
         var numBalProcessed = 0;
@@ -322,12 +323,17 @@ function WalletViewModel() {
   
   }
 
-  self.refreshBTCBalances = function(isRecurring) {
+  self.refreshBTCBalances = function(isRecurring, addresses, onSuccess) {
     if(typeof(isRecurring)==='undefined') isRecurring = false;
     //^ if isRecurring is set to true, we will update BTC balances every 5 min as long as self.autoRefreshBTCBalances == true
     
     //update all BTC balances (independently, so that one addr with a bunch of txns doesn't hold us up)
-    var addresses = self.getAddressesList();
+    if (addresses == undefined || addresses == null) {
+      addresses = self.getAddressesList();
+    }
+
+    $.jqlog.debug(addresses);
+
     var completedAddresses = []; //addresses whose balance has been retrieved
     var addressObj = null;
     
@@ -351,6 +357,13 @@ function WalletViewModel() {
         
         addressObj = self.getAddressObj(data[i]['addr']);
         assert(addressObj, "Cannot find address in wallet for refreshing VIA balances!");
+
+        if (data[i]['confirmedRawBal'] > 0 || data[i]['unconfirmedRawBal'] > 0 || 
+            data[i]['numPrimedTxoutsIncl0Confirms'] > 0 || data[i]['numPrimedTxouts'] > 0 ||
+            data[i]['lastTxns'] > 0) {
+          addressObj.withMovement(true);
+        }
+
         if(data[i]['confirmedRawBal'] && !addressObj.IS_WATCH_ONLY) {
           //Also refresh BTC unspent txouts (to know when to "reprime" the account)
           addressObj.numPrimedTxouts(data[i]['numPrimedTxouts']);
@@ -380,6 +393,9 @@ function WalletViewModel() {
           if(self.autoRefreshBTCBalances) { self.refreshBTCBalances(true); }
         }, 1000 * 24);
       }
+
+      if (onSuccess) onSuccess();
+
     }, function(jqXHR, textStatus, errorThrown) {
       //insight down or spazzing, set all BTC balances out to null
       var addressObj = null;
@@ -389,7 +405,7 @@ function WalletViewModel() {
         addressObj.numPrimedTxouts(null); //null = UNKNOWN
         addressObj.numPrimedTxoutsIncl0Confirms(null); //null = UNKNOWN
       }
-      bootbox.alert("Got an error when trying to sync VIA balances: " + textStatus);
+      bootbox.alert(i18n.t("btc_sync_error", textStatus));
       
       if(isRecurring && self.autoRefreshBTCBalances) {
         setTimeout(function() {
@@ -413,8 +429,7 @@ function WalletViewModel() {
   //BTC-related
   self.broadcastSignedTx = function(signedTxHex, onSuccess, onError) {
     if (signedTxHex==false) {
-      bootbox.alert("Client-side transaction validation FAILED. Transaction will be aborted and NOT broadcast."
-                    + " Please contact the ClearingHouse development team");
+      bootbox.alert(i18n.t("tx_validation_failed"));
       return false;
     }
     $.jqlog.debug("RAW SIGNED HEX: " + signedTxHex);
@@ -513,10 +528,7 @@ function WalletViewModel() {
     assert(!addressObj.IS_WATCH_ONLY, "Cannot perform this action on a watch only address!");
     
     if(self.getBalance(address, "VIA", false) < MIN_PRIME_BALANCE) {
-      bootbox.alert("Cannot do this action as you have insufficient <b class='notoAssetColor'>VIA</b> at this address."
-        + "Due to Viacoin fees, each ClearingHouse action requires"
-        + " approximately <b class='notoQuantityColor'>" + normalizeQuantity(MIN_PRIME_BALANCE) + "</b> <b class='notoAssetColor'>VIA</b> to perform.<br/><br/>"
-        + "Please deposit the necessary <b class='notoAssetColor'>VIA</b> into <b class='notoAddrColor'>" + getAddressLabel(address) + "</b> and try again.");
+      bootbox.alert(i18n.t("insufficient_btc", normalizeQuantity(MIN_PRIME_BALANCE), getAddressLabel(address)));
       return false;
     }
 
@@ -615,22 +627,21 @@ function WalletViewModel() {
   
   self.showTransactionCompleteDialog = function(text, armoryText, armoryUTx) {
     if(armoryUTx) {
-      bootbox.alert((armoryText || text) + "<br/><br/>To complete the transaction, please copy over and sign the text below on your"
-        + " offline Armory system, then bring back to Clearwallet to broadcast:</br>"
-        + "<textarea class=\"form-control armoryUTxTextarea\" rows=\"20\">" + armoryUTx + "</textarea>");
+      bootbox.alert((armoryText || text) + "<br/><br/>" + i18n.t("to_complete_armory_tx")
+        + "</br><textarea class=\"form-control armoryUTxTextarea\" rows=\"20\">" + armoryUTx + "</textarea>");
     } else {
       bootbox.alert(text);
     }
   }
 
-  self.storePreferences = function(callback, for_login) {
+  self.storePreferences = function(callback, forLogin) {
     var params = {
       'wallet_id': WALLET.identifier(),
       'preferences': PREFERENCES,
       'network': USE_TESTNET ? 'testnet' : 'mainnet',
       'referer': ORIG_REFERER
     };
-    if (for_login) {
+    if (forLogin) {
       params['for_login'] = true;
     }
     multiAPI("store_preferences", params, callback);

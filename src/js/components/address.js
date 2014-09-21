@@ -26,6 +26,7 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
   self.numPrimedTxouts = ko.observable(null);
   //^ # of unspent txouts for this address fitting our criteria, or null if unknown (e.g. insight is down/not responding)
   self.numPrimedTxoutsIncl0Confirms = ko.observable(null);
+  self.withMovement = ko.observable(false);
 
   self.assets = ko.observableArray([
     new AssetViewModel({address: address, asset: "VIA"}), //will be updated with data loaded from insight
@@ -118,10 +119,10 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
       self.assets.push(new AssetViewModel(assetProps)); //add new
       setTimeout(function() {
 
-        $('#address-wid-' + self.ADDRESS + ' .dropdown-toggle').last().dropdown();
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .dropdown-toggle').last().dropdown();
 
-        $('#address-wid-' + self.ADDRESS + ' .asset-item:last-child .assetBtn').unbind('click');
-        $('#address-wid-' + self.ADDRESS + ' .asset-item:last-child .assetBtn').click(function (event) {
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .assetBtn').unbind('click');
+        $('#asset-' + self.ADDRESS + '-' + asset + ' .assetBtn').click(function (event) {
           var menu = $(this).parent().find('ul');
           if (menu.css('display')=='block') {
             menu.hide();
@@ -195,7 +196,7 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
     //Show the QR code for this address
     var qrcode = makeQRCode(self.ADDRESS);
     //Pop up a modal with this code
-    bootbox.alert('<center><h4>QR Code for <b>' + self.ADDRESS + '</b></h4><br/>' + qrcode + '</center>');
+    bootbox.alert('<center><h4>' + i18n.t('qr_code_for', self.ADDRESS) + '</h4><br/>' + qrcode + '</center>');
   }
 
   self.showPrivateKey = function() {
@@ -239,10 +240,7 @@ function AddressViewModel(type, key, address, initialLabel, armoryPubKey) {
 
     var xcpBalance = WALLET.getBalance(self.ADDRESS, 'XCH');
     if(xcpBalance < ASSET_CREATION_FEE_XCP) {
-      bootbox.alert("You need at least <b class='notoAmountColor'>" + ASSET_CREATION_FEE_XCP + "</b> <b class='notoAssetColor'>XCH</b>"
-        + " to create a token, however, your current balance is only"
-        + " <b class='notoAmountColor'>" + xcpBalance + "</b> <b class='notoAssetColor'>XCH</b>."
-        + "<br/><br/>Please deposit more <b class='notoAssetColor'>XCH</b> into this address and try again.");
+      bootbox.alert(i18n.t("no_enough_for_issuance_fee", ASSET_CREATION_FEE_XCP, xcpBalance));
       return false;
     }
 

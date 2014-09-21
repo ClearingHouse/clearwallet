@@ -6,6 +6,9 @@ module.exports = function(grunt) {
     var Path = require('path');
     var CleanCSS = require('clean-css');
     var Uglify = require("uglify-js");
+    var https = require('https');
+    var fs = require('fs');
+    var Transifex = require("transifex");
 
     var defaultOptions = {
         buildDir: 'build/',
@@ -94,7 +97,7 @@ module.exports = function(grunt) {
         grunt.log.writeln("Original url: "+url);
         var newUrl = url;
         // procession only relatve urls
-        if (/^\/|https:|http:|data:/i.test(url) === false && url != '') {
+        if (/^(\/|https:|http:|data:|\?)/i.test(url) === false && url != '') {
             var urlPath = Path.resolve(srcfiledir + '/' + url);
 
             // extract query string
@@ -131,7 +134,6 @@ module.exports = function(grunt) {
 
             newUrl = generateFinalUrl(newUrl, destfile, config);
             
-
             grunt.log.writeln("New url: "+newUrl);
 
             var newUrlPath = Path.resolve(config.assetsDir+newFilename);
@@ -324,7 +326,6 @@ module.exports = function(grunt) {
         minifyApp(this.files, config);    
     });
 
-
     // this task populate others tasks config and run them
     grunt.registerMultiTask('build', 'Build app', function() {
 
@@ -354,6 +355,7 @@ module.exports = function(grunt) {
                 }
             });  
             grunt.task.run('minify');
+
         }
 
         if (this.target=='copy') { 
@@ -365,6 +367,8 @@ module.exports = function(grunt) {
             });
             grunt.task.run('copy');
 
+            grunt.task.run('transifex');
+            
         }
         
     }); 
@@ -379,6 +383,55 @@ module.exports = function(grunt) {
             }
         });
         grunt.task.run('freezedependencies');
+    });
+
+
+    grunt.registerMultiTask('transifex', 'Download translations from transifex', function() {
+        grunt.log.writeln('Download translations from transifex');
+
+        var done = this.async();
+
+        var homePath = (process.env['HOME'] + '/') || (process.env['USERPROFILE'] + '/') || './';
+        var buildDir = this.options(defaultOptions).buildDir;
+
+        var languages = grunt.config.get('transifex').languages;
+        var languages_done = [];
+
+        if (!grunt.file.exists(homePath + '.transifex')) {
+            throw new Error('You must put a transifex user and password in '+ homePath + ".transifex in this format: user:password\n")
+        }
+
+        var credential = grunt.file.read(homePath + '.transifex').trim();
+        var Transifex = require('transifex');
+        var transifex = new Transifex({
+            project_slug: 'counterwallet',
+            credential: credential // In the same format
+        });
+        
+        var languageDone = function(lang) {
+            grunt.log.writeln(lang + ' done');
+            languages_done.push(lang)
+            if (languages_done.sort().toString() == languages.sort().toString()) {
+                grunt.log.writeln('all lang done');
+                done();
+            }
+        }
+
+        var downloadLang = function(lang) {
+            transifex.translationInstanceMethod('counterwallet', 'translationjson', lang, function(err, data) {
+                if (err) {
+                    throw new Error("Error during translation.json download: " + err.message);
+                } else {
+                    grunt.file.write(buildDir + 'locales/' + lang.toLowerCase() + '/translation.json', data);
+                    languageDone(lang);
+                }
+            });
+        }
+
+        for (var i in languages) {
+            downloadLang(languages[i]);
+        }
+
     });
 
 }

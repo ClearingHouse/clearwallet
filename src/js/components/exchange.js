@@ -1,7 +1,7 @@
 var BuySellAddressInDropdownItemModel = function(address, label, asset, balance) {
   this.ADDRESS = address;
   this.LABEL = label;
-  this.SELECT_LABEL = (label ? ("<b>" + label + "</b><br/>" + address + "<br/>" + asset + " Bal: " + balance) : (address + "<br/>" + asset + " Bal: " + balance));
+  this.SELECT_LABEL = (label ? ("<b>" + label + "</b><br/>" + address + "<br/>" + asset + " " + i18n.t('bal') + " " + balance) : (address + "<br/>" + asset + " " + i18n.t('bal') + " " + balance));
   this.BALANCE = parseFloat(balance);
 };
 
@@ -13,7 +13,7 @@ ko.validation.rules['ordersIsExistingAssetName'] = {
     });
     return match;
   },
-  message: "Asset doesn't exist."
+  message: i18n.t("asset_doesnt_exist")
 };
 ko.validation.registerExtenders();
 
@@ -45,7 +45,7 @@ function ExchangeViewModel() {
       validator: function (val, self) {
         return val !== self.asset1();
       },
-      message: 'Same as other asset',
+      message: i18n.t('same_as_other_asset'),
       params: self
     }    
   });
@@ -134,9 +134,15 @@ function ExchangeViewModel() {
   ********************************************/
 
   self.highestBidPrice = ko.observable();
-  self.sellPrice = ko.observable();
+  self.sellPrice = ko.observable(0).extend({
+    required: true,
+    isValidPositiveQuantity: self
+  });
   self.sellAmount = ko.observable(0);
-  self.sellTotal = ko.observable(0);
+  self.sellTotal = ko.observable(0).extend({
+    required: true,
+    isValidPositiveQuantity: self
+  });
   self.sellPriceHasFocus = ko.observable();
   self.sellAmountHasFocus = ko.observable();
   self.sellTotalHasFocus = ko.observable();
@@ -199,7 +205,11 @@ function ExchangeViewModel() {
 
   self.sellTotal.subscribe(function(total) {
     if (!self.sellTotalHasFocus() || !self.sellPrice()) return;
-    self.sellAmount(noExponents(divFloat(total, self.sellPrice())));
+    if (total == 0) {
+      self.sellAmount(0);
+    } else {
+      self.sellAmount(noExponents(divFloat(total, self.sellPrice())));
+    }
   })
 
   self.sellAmount.extend({
@@ -209,13 +219,15 @@ function ExchangeViewModel() {
       validator: function (val, self) {
         return parseFloat(val) <= self.availableBalanceForSell();
       },
-      message: 'Amount entered exceeds the address balance.',
+      message: i18n.t('quantity_exceeds_balance'),
       params: self
     }    
   });
 
   self.sellValidation = ko.validatedObservable({
-    sellAmount: self.sellAmount
+    sellAmount: self.sellAmount,
+    sellPrice: self.sellPrice,
+    sellTotal: self.sellTotal
   });
 
   self.sellFee = ko.computed(function() {
@@ -231,7 +243,7 @@ function ExchangeViewModel() {
   });
 
   self.selectBuyOrder = function(order, notFromClick) {
-    var price = new Decimal(order.price);
+    var price = new Decimal(cleanHtmlPrice(order.price));
     var amount1 = new Decimal(self.availableBalanceForSell());
     var amount2 = new Decimal(order.base_depth);
     var amount = amount1.compare(amount2) > 0 ? amount2 : amount1;
@@ -259,7 +271,7 @@ function ExchangeViewModel() {
     var get_quantity = denormalizeQuantity(self.sellTotal(), self.quoteAssetIsDivisible());
     var fee_required = 0;
     var fee_provided = MIN_FEE;
-    var expiration = ORDER_DEFAULT_EXPIRATION;
+    var expiration = parseInt(WALLET_OPTIONS_MODAL.orderDefaultExpiration());
 
     if (self.quoteAsset() == 'VIA') {
       fee_required = mulFloat(get_quantity, WALLET_OPTIONS_MODAL.defaultBTCFeeRequiredPct()/100);
@@ -269,7 +281,7 @@ function ExchangeViewModel() {
     if (self.baseAsset() == 'VIA') {
       fee_provided = mulFloat(give_quantity, WALLET_OPTIONS_MODAL.defaultBTCFeeProvidedPct()/100);
       fee_provided = Math.ceil(fee_provided);
-      expiration = ORDER_BTCSELL_DEFAULT_EXPIRATION;
+      expiration = parseInt(WALLET_OPTIONS_MODAL.orderBTCSellDefaultExpiration());
     }
 
     var params = {
@@ -288,9 +300,14 @@ function ExchangeViewModel() {
     var onSuccess = function(txHash, data, endpoint, addressType, armoryUTx) {
       trackEvent('Exchange', 'Sell', self.dispAssetPair());
       
-      var message = "Your order to sell <b class='notoQuantityColor'>" + self.sellAmount() + "</b>"
-       + " <b class='notoAssetColor'>" + self.baseAsset() + "</b> " + (armoryUTx ? "will be placed" : "has been placed") + ". "; 
-      WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
+      var message = "";
+      if (armoryUTx) {
+        message = i18n.t("you_sell_order_will_be_placed", self.sellAmount(), self.baseAsset()); 
+      } else {
+        message = i18n.t("you_sell_order_has_been_placed", self.sellAmount(), self.baseAsset()); 
+      }
+
+      WALLET.showTransactionCompleteDialog(message + " " + i18n.t(ACTION_PENDING_NOTICE), message, armoryUTx);
        
       //if the order involes selling BTC, then we want to notify the servers of our wallet_id so folks can see if our
       // wallet is "online", in order to determine if we'd be able to best make the necessary BTCpay
@@ -325,18 +342,18 @@ function ExchangeViewModel() {
     estimatedTotalPrice = smartFormat(estimatedTotalPrice);
 
     message  = '<table class="confirmOrderBox">';
-    message += '<tr><td><b>Price: </b></td><td style="text-align:right">' + self.sellPrice() + '</td><td>' + self.quoteAsset() + '/' + self.baseAsset() + '</td></tr>';
-    message += '<tr><td><b>Amount: </b></td><td style="text-align:right">' + self.sellAmount() + '</td><td>' + self.baseAsset() + '</td></tr>';
-    message += '<tr><td><b>Total: </b></td><td style="text-align:right">' + self.sellTotal() + '</td><td>' + self.quoteAsset() + '</td></tr>';
-    message += '<tr><td><b>Real estimated total: </b></td><td style="text-align:right">' + estimatedTotalPrice + '</td><td>' + self.quoteAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('price') + ': </b></td><td style="text-align:right">' + self.sellPrice() + '</td><td>' + self.quoteAsset() + '/' + self.baseAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('amount') + ': </b></td><td style="text-align:right">' + self.sellAmount() + '</td><td>' + self.baseAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('total') + ': </b></td><td style="text-align:right">' + self.sellTotal() + '</td><td>' + self.quoteAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('real_estimated_total') + ': </b></td><td style="text-align:right">' + estimatedTotalPrice + '</td><td>' + self.quoteAsset() + '</td></tr>';
     message += '</table>';
 
     bootbox.dialog({
-      title: "Confirm your order",
+      title: i18n.t("confirm_your_order"),
       message: message,
       buttons: {
         "cancel": {
-          label: "Close",
+          label: i18n.t("close"),
           className: "btn-danger",
           callback: function() {
             bootbox.hideAll();
@@ -344,7 +361,7 @@ function ExchangeViewModel() {
           }
         },
         "confirm": {
-          label: "Confirm Order",
+          label: i18n.t("confirm_order"),
           className: "btn-primary",
           callback: function() {
             bootbox.hideAll();
@@ -366,8 +383,14 @@ function ExchangeViewModel() {
   ********************************************/
 
   self.lowestAskPrice = ko.observable();
-  self.buyPrice = ko.observable();
-  self.buyAmount = ko.observable(0);
+  self.buyPrice = ko.observable(0).extend({
+    required: true,
+    isValidPositiveQuantity: self
+  });
+  self.buyAmount = ko.observable(0).extend({
+    required: true,
+    isValidPositiveQuantity: self
+  });
   self.buyTotal = ko.observable(0);
   self.buyPriceHasFocus = ko.observable();
   self.buyAmountHasFocus = ko.observable();
@@ -414,7 +437,11 @@ function ExchangeViewModel() {
     var bal = self.balances[value + '_' + self.quoteAsset()];
     self.availableBalanceForBuy(bal);
     if (self.lowestAskPrice()) {
-      self.obtainableForBuy(divFloat(bal, self.lowestAskPrice()));  
+      if (bal == 0) {
+        self.obtainableForBuy(0);
+      } else {
+        self.obtainableForBuy(divFloat(bal, self.lowestAskPrice()));
+      }
     }
   })
 
@@ -430,7 +457,11 @@ function ExchangeViewModel() {
 
   self.buyTotal.subscribe(function(total) {
     if (!self.buyTotalHasFocus() || !self.buyPrice()) return;
-    self.buyAmount(noExponents(divFloat(total, self.buyPrice())));
+    if (total == 0) {
+      self.buyAmount(0);
+    } else {
+      self.buyAmount(noExponents(divFloat(total, self.buyPrice())));
+    }
   })
 
   self.buyTotal.extend({
@@ -440,13 +471,15 @@ function ExchangeViewModel() {
       validator: function (val, self) {
         return parseFloat(val) <= self.availableBalanceForBuy();
       },
-      message: 'Amount entered exceeds the address balance.',
+      message: i18n.t('quantity_exceeds_balance'),
       params: self
     }    
   });
 
   self.buyValidation = ko.validatedObservable({
-    buyTotal: self.buyTotal
+    buyTotal: self.buyTotal,
+    buyPrice: self.buyPrice,
+    buyAmount: self.buyAmount
   });
 
   self.buyFee = ko.computed(function() {
@@ -462,7 +495,7 @@ function ExchangeViewModel() {
   });
 
   self.selectSellOrder = function(order, notFromClick) {
-    var price = new Decimal(order.price);
+    var price = new Decimal(cleanHtmlPrice(order.price));
     var amount = new Decimal(order.base_depth);
     var total1 = price.mul(amount);
     var total2 = new Decimal(self.availableBalanceForBuy());
@@ -482,7 +515,12 @@ function ExchangeViewModel() {
     var total = self.availableBalanceForBuy();
     self.buyTotal(total);
     if (self.buyPrice()) {
-      self.buyAmount(divFloat(total, self.buyPrice()));
+      if (total==0) {
+        self.buyAmount(0);
+      } else {
+        self.buyAmount(divFloat(total, self.buyPrice()));
+      }
+      
     } 
   }
 
@@ -491,7 +529,7 @@ function ExchangeViewModel() {
     var get_quantity = denormalizeQuantity(self.buyAmount(), self.baseAssetIsDivisible());
     var fee_required = 0;
     var fee_provided = MIN_FEE;
-    var expiration = ORDER_DEFAULT_EXPIRATION;
+    var expiration = parseInt(WALLET_OPTIONS_MODAL.orderDefaultExpiration());
 
     if (self.baseAsset() == 'VIA') {
       fee_required = mulFloat(get_quantity, WALLET_OPTIONS_MODAL.defaultBTCFeeRequiredPct()/100);
@@ -501,7 +539,7 @@ function ExchangeViewModel() {
     if (self.quoteAsset() == 'VIA') {
       fee_provided = mulFloat(give_quantity, WALLET_OPTIONS_MODAL.defaultBTCFeeProvidedPct()/100);
       fee_provided = Math.ceil(fee_provided);
-      expiration = ORDER_BTCSELL_DEFAULT_EXPIRATION;
+      expiration = parseInt(WALLET_OPTIONS_MODAL.orderBTCSellDefaultExpiration());
     }
 
     var params = {
@@ -520,9 +558,14 @@ function ExchangeViewModel() {
     var onSuccess = function(txHash, data, endpoint, addressType, armoryUTx) {
       trackEvent('Exchange', 'Buy', self.dispAssetPair());
       
-      var message = "Your order to buy <b class='notoQuantityColor'>" + self.buyAmount() + "</b>"
-       + " <b class='notoAssetColor'>" + self.baseAsset() + "</b> " + (armoryUTx ? "will be placed" : "has been placed") + ". "; 
-      WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
+      var message = "";
+      if (armoryUTx) {
+        message = i18n.t("you_buy_order_will_be_placed", self.buyAmount(), self.baseAsset()); 
+      } else {
+        message = i18n.t("you_buy_order_has_been_placed", self.buyAmount(), self.baseAsset());
+      }
+
+      WALLET.showTransactionCompleteDialog(message + " " + i18n.t(ACTION_PENDING_NOTICE), message, armoryUTx);
       
       //if the order involes selling BTC, then we want to notify the servers of our wallet_id so folks can see if our
       // wallet is "online", in order to determine if we'd be able to best make the necessary BTCpay
@@ -557,22 +600,22 @@ function ExchangeViewModel() {
     estimatedTotalPrice = smartFormat(estimatedTotalPrice);
 
     message  = '<table class="confirmOrderBox">';
-    message += '<tr><td><b>Price: </b></td><td style="text-align:right">' + self.buyPrice() + '</td><td>' + self.quoteAsset() + '/' + self.baseAsset() + '</td></tr>';
-    message += '<tr><td><b>Amount: </b></td><td style="text-align:right">' + self.buyAmount() + '</td><td>' + self.baseAsset() + '</td></tr>';
-    message += '<tr><td><b>Total: </b></td><td style="text-align:right">' + self.buyTotal() + '</td><td>' + self.quoteAsset() + '</td></tr>';
-    message += '<tr><td><b>Real estimated total: </b></td><td style="text-align:right">' + estimatedTotalPrice + '</td><td>' + self.quoteAsset() + '</td></tr>';
-    if (self.quoteAsset() == 'VIA') {
-      message += '<tr><td><b>Provided fee: </b></td><td style="text-align:right">' + self.buyFee() + '</td><td>' + self.quoteAsset() + '</td></tr>';
-      message += '<tr><td colspan="3"><i>These fees are optional, go directly miners (not to us) and are non-refundable.</i></td></tr>';
+    message += '<tr><td><b>' + i18n.t('price') + ': </b></td><td style="text-align:right">' + self.buyPrice() + '</td><td>' + self.quoteAsset() + '/' + self.baseAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('amount') + ': </b></td><td style="text-align:right">' + self.buyAmount() + '</td><td>' + self.baseAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('total') + ': </b></td><td style="text-align:right">' + self.buyTotal() + '</td><td>' + self.quoteAsset() + '</td></tr>';
+    message += '<tr><td><b>' + i18n.t('real_estimated_total') + ': </b></td><td style="text-align:right">' + estimatedTotalPrice + '</td><td>' + self.quoteAsset() + '</td></tr>';
+    if (self.quoteAsset() == 'BTC') {
+      message += '<tr><td><b>' + i18n.t('provided_fee') + ': </b></td><td style="text-align:right">' + self.buyFee() + '</td><td>' + self.quoteAsset() + '</td></tr>';
+      message += '<tr><td colspan="3"><i>' + i18n.t('these_fees_are_optional') + '</i></td></tr>';
     }
     message += '</table>';
 
     bootbox.dialog({
-      title: "Confirm your order",
+      title: i18n.t("confirm_your_order"),
       message: message,
       buttons: {
         "cancel": {
-          label: "Close",
+          label: i18n.t("close"),
           className: "btn-danger",
           callback: function() {
             bootbox.hideAll();
@@ -580,7 +623,7 @@ function ExchangeViewModel() {
           }
         },
         "confirm": {
-          label: "Confirm Order",
+          label: i18n.t("confirm_order"),
           className: "btn-primary",
           callback: function() {
             bootbox.hideAll();
@@ -757,7 +800,7 @@ function ExchangeViewModel() {
         var a = new Decimal(data['buy_orders'][i]['amount']);
         var t = new Decimal(data['buy_orders'][i]['total']);
         var p = roundAmount(t.div(a));
-        data['buy_orders'][i]['price'] = p;
+        data['buy_orders'][i]['price'] = formatHtmlPrice(p);
         data['buy_orders'][i]['base_depth'] = amount + base_depth;
         base_depth = data['buy_orders'][i]['base_depth'];
       }
@@ -783,7 +826,7 @@ function ExchangeViewModel() {
         var a = new Decimal(data['sell_orders'][i]['amount']);
         var t = new Decimal(data['sell_orders'][i]['total']);
         var p = roundAmount(t.div(a));
-        data['sell_orders'][i]['price'] = p;
+        data['sell_orders'][i]['price'] = formatHtmlPrice(p);
         data['sell_orders'][i]['base_depth'] = amount + base_depth;
         base_depth = data['sell_orders'][i]['base_depth'];
       }
@@ -896,17 +939,17 @@ function ExchangeViewModel() {
   self.cancelOrder = function(order) {
     $.jqlog.debug(order);
 
-    var message = 'Requests to cancel an order will still consume BTC (necessary to pay the Viacoin miner fee). To avoid this, let your order expire naturally.';
+    var message = i18n.t('cancel_consume_btc');
     if (self.quoteAsset() == 'VIA' && order.type == 'BUY') {
-      message += '<br />We recommend to use XCH for your next trades! It\'s faster, cheaper, and you don\'t have to stay logged in.';
+      message += '<br />' + i18n.t('we_recommend_to_use_xcp');
     }
 
     bootbox.dialog({
-      title: "Confirm cancellation order",
+      title: i18n.t("confirm_cancellation_order"),
       message: message,
       buttons: {
         "cancel": {
-          label: "Close",
+          label: i18n.t("close"),
           className: "btn-danger",
           callback: function() {
             bootbox.hideAll();
@@ -914,7 +957,7 @@ function ExchangeViewModel() {
           }
         },
         "confirm": {
-          label: "Confirm Cancellation",
+          label: i18n.t("confirm_cancellation"),
           className: "btn-primary",
           callback: function() {
             bootbox.hideAll();
@@ -938,8 +981,8 @@ function ExchangeViewModel() {
 
     var onSuccess = function(txHash, data, endpoint, addressType, armoryUTx) {
       trackEvent('Exchange', 'OrderCanceled');
-      WALLET.showTransactionCompleteDialog("<b>Your order was canceled successfully.</b> " + ACTION_PENDING_NOTICE,
-        "<b>Your order will be cancelled.</b>", armoryUTx);
+      WALLET.showTransactionCompleteDialog("<b>" + i18n.t("order_was_cancelled") + "</b> " + i18n.t(ACTION_PENDING_NOTICE),
+        "<b>" + i18n.t("order_will_be_cancelled") + "</b>", armoryUTx);
     }
     
     WALLET.doTransaction(order.source, "create_cancel", params, onSuccess);
@@ -1124,13 +1167,13 @@ function OpenOrdersViewModel() {
       order.get_asset = data[i].get_asset;
       order.give_quantity = data[i].give_quantity;
       order.get_quantity = data[i].get_quantity;
-      order.give_remaining = data[i].give_remaining;
-      order.get_remaining = data[i].get_remaining;
+      order.give_remaining = Math.max(data[i].give_remaining, 0);
+      order.get_remaining = Math.max(data[i].get_remaining, 0);
       order.expire_index = data[i].expire_index;
       order.expire_date = expireDate(data[i].expire_index);
       orders.push(order);
       assets[data[i].give_asset] = true;
-      assets[data[i].give_asset] = true;
+      assets[data[i].get_asset] = true;
     }
     assets = _.keys(assets);
 
@@ -1149,17 +1192,17 @@ function OpenOrdersViewModel() {
   self.cancelOpenOrder = function(order) {
     $.jqlog.debug(order);
 
-    var message = 'Requests to cancel an order will still consume VIA (necessary to pay the Viacoin miner fee). To avoid this, let your order expire naturally.';
+    var message = i18n.t('cancel_consume_btc');
     if (order.give_quantity_str.indexOf('VIA') != -1) {
-      message += '<br />We recommend to use XCH for your next trades! It\'s faster, cheaper, and you don\'t have to stay logged in.';
+      message += '<br />' + i18n.t('we_recommend_to_use_xcp');
     }
 
     bootbox.dialog({
-      title: "Confirm cancellation order",
+      title: i18n.t("confirm_cancellation_order"),
       message: message,
       buttons: {
         "cancel": {
-          label: "Close",
+          label: i18n.t("close"),
           className: "btn-danger",
           callback: function() {
             bootbox.hideAll();
@@ -1167,7 +1210,7 @@ function OpenOrdersViewModel() {
           }
         },
         "confirm": {
-          label: "Confirm Cancellation",
+          label: i18n.t("confirm_cancellation"),
           className: "btn-primary",
           callback: function() {
             bootbox.hideAll();
@@ -1190,8 +1233,8 @@ function OpenOrdersViewModel() {
 
     var onSuccess = function(txHash, data, endpoint, addressType, armoryUTx) {
       trackEvent('OpenOrders', 'OrderCancelled');
-      WALLET.showTransactionCompleteDialog("<b>Your order was canceled successfully.</b> " + ACTION_PENDING_NOTICE,
-        "<b>Your order will be cancelled.</b>", armoryUTx);
+      WALLET.showTransactionCompleteDialog("<b>" + i18n.t("order_was_cancelled") + "</b> " + i18n.t(ACTION_PENDING_NOTICE),
+        "<b>" + i18n.t("order_will_be_cancelled") + "</b>", armoryUTx);
     }
 
     WALLET.doTransaction(order.source, "create_cancel", params, onSuccess);
@@ -1258,7 +1301,12 @@ function OrderMatchesViewModel() {
         'pending': 'primary',
         'expired': 'danger'
       };
-      order_match.status_html = '<span class="label label-'+classes[order_match.status]+'">'+order_match.status+'</span>';
+      var label_for_status = {
+        'completed': i18n.t('completed'),
+        'pending': i18n.t('pending'),
+        'expired': i18n.t('expired')
+      };
+      order_match.status_html = '<span class="label label-'+classes[order_match.status]+'">'+label_for_status[order_match.status]+'</span>';
 
       order_matches.push(order_match);
     }

@@ -160,6 +160,8 @@ function LogonViewModel() {
       
       // set quote assets
       QUOTE_ASSETS = data['quote_assets']
+
+      QUICK_BUY_ENABLE = data['quick_buy_enable'];
       
       //See if any servers show the wallet as online (this will return the a true result, if any server shows the wallet as online)
       multiAPI("is_wallet_online", {'wallet_id': WALLET.identifier()}, self.onIsWalletOnline);
@@ -167,21 +169,21 @@ function LogonViewModel() {
     },
     function(jqXHR, textStatus, errorThrown, endpoint) {
       var message = describeError(jqXHR, textStatus, errorThrown);
-      bootbox.alert("No clearinghouse servers are currently available. Please try again later. ERROR: " + message);
+      bootbox.alert(i18n.t("no_counterparty_error", message));
     });
   }
 
   self.onIsWalletOnline = function(isOnline, endpoint) {
     if(isOnline) {
       trackEvent("Login", "Wallet", "IsAlreadyOnline");
-      var message = "<b class='errorColor'>You appear to be logged into Clearwallet elsewhere.</b> It's not safe to be logged into the same wallet account from multiple devices at the same time. If you are sure that this is not the case, press Continue. Otherwise, please press Cancel, logout from your other device, and try again.";
+      var message = i18n.t("multi_connection");
       
       bootbox.dialog({
-        title: "Confirm connection",
+        title: i18n.t("confirm_connection"),
         message: message,
         buttons: {
           "cancel": {
-            label: "Cancel",
+            label: i18n.t("cancel"),
             className: "btn-danger",
             callback: function() {
               bootbox.hideAll();
@@ -190,7 +192,7 @@ function LogonViewModel() {
             }
           },
           "continue": {
-            label: "Continue",
+            label: i18n.t("continue"),
             className: "btn-primary",
             callback: function() {
               multiAPINewest("get_preferences", {
@@ -258,7 +260,6 @@ function LogonViewModel() {
     }
     
     WALLET_OPTIONS_MODAL.selectedTheme(PREFERENCES['selected_theme']);
-    WALLET_OPTIONS_MODAL.selectedLang(PREFERENCES['selected_lang']);
     
     self.displayLicenseIfNecessary(mustSavePreferencesToServer);
   }
@@ -278,56 +279,93 @@ function LogonViewModel() {
       WALLET.isOldWallet(WALLET.BITCOIN_WALLET.useOldHierarchicalKey);
       //kick off address generation (we have to take this hacky approach of using setTimeout, otherwise the
       // progress bar does not update correctly through the HD wallet build process....)
-      setTimeout(function() { self.genAddress(mustSavePreferencesToServer) }, 1);
+      setTimeout(function() { self.genAddress(mustSavePreferencesToServer, PREFERENCES['num_addresses_used']) }, 1);
   }
   
-  self.genAddress = function(mustSavePreferencesToServer) {
-    var i = WALLET.addresses().length;
-    var address = WALLET.addAddress('normal');
-    var addressHash = hashToB64(address);
-
-    if(PREFERENCES.address_aliases[addressHash] === undefined) { //no existing label. we need to set one
-      mustSavePreferencesToServer = true; //if not already true
-      PREFERENCES.address_aliases[addressHash] = "My Address #" + (i + 1);
-    }
+  self.genAddress = function(mustSavePreferencesToServer, addressCount) {
     
-    var progress = (i + 1) * (100 / PREFERENCES['num_addresses_used']);
-    self.walletGenProgressVal(progress);
-    $.jqlog.debug("Progress: Address " + (i + 1) + " of " + PREFERENCES['num_addresses_used']
-      + " (" + self.walletGenProgressVal() + "%) -- " + address);
+    var moreAddresses = [];
 
-    if(i + 1 < PREFERENCES['num_addresses_used']) {
-      setTimeout(function() { self.genAddress(mustSavePreferencesToServer) }, 1);
-    } else {
-      return self.openWalletPt3(mustSavePreferencesToServer);
+    for (var i = 0; i < addressCount; i++) {
+
+      var address = WALLET.addAddress('normal');
+      var addressHash = hashToB64(address);
+      var len = WALLET.addresses().length;
+      moreAddresses.push(address);
+  
+      if(PREFERENCES.address_aliases[addressHash] === undefined) { //no existing label. we need to set one
+        mustSavePreferencesToServer = true; //if not already true
+        PREFERENCES.address_aliases[addressHash] = i18n.t("default_address_label", (i + 1));
+      }
+
+      $.jqlog.info("Address discovery: Generating address " + len + " of " + PREFERENCES['num_addresses_used']
+        + " (num_addresses_used) (" + self.walletGenProgressVal() + "%) -- " + address);
+      
+      if(len <= PREFERENCES['num_addresses_used']) { //for visual effect
+        var progress = len * (100 / PREFERENCES['num_addresses_used']);
+        self.walletGenProgressVal(progress);
+      }
+
     }
+
+    WALLET.refreshBTCBalances(false, moreAddresses, function() {
+      
+      var generateAnotherAddress = false;
+      var totalAddresses = WALLET.addresses().length;
+      var lastAddressWithMovement = WALLET.addresses()[totalAddresses - 1].withMovement();
+
+      if (lastAddressWithMovement) {
+        generateAnotherAddress = true;
+      } else if (totalAddresses > PREFERENCES['num_addresses_used'] && !lastAddressWithMovement) {
+        WALLET.addresses.pop();
+      }
+       
+      if (generateAnotherAddress) {
+
+        $.jqlog.info("Address discovery: Generating another address...");
+        setTimeout(function() { self.genAddress(mustSavePreferencesToServer, 1) }, 1);
+
+      } else {
+
+        if (PREFERENCES['num_addresses_used'] != WALLET.addresses().length) {
+          PREFERENCES['num_addresses_used'] = WALLET.addresses().length;
+          mustSavePreferencesToServer = true;
+        }
+        return self.openWalletPt3(mustSavePreferencesToServer);
+
+      }
+    });
   }
   
-  self.updateBalances = function(onSuccess) {
+  self.updateBalances = function(additionalBTCAddresses, onSuccess) {
     //updates all balances for all addesses, creating the asset objects on the address if need be
-    WALLET.refreshBTCBalances(true);
-    //^ specify true here to start a recurring get BTC balances timer chain 
-
-    WALLET.refreshCounterpartyBalances(WALLET.getAddressesList(), onSuccess);
+    WALLET.refreshBTCBalances(true, additionalBTCAddresses, function() {
+      //^ specify true here to start a recurring get BTC balances timer chain
+      WALLET.refreshCounterpartyBalances(WALLET.getAddressesList(), onSuccess);
+    });
   }
   
   self.openWalletPt3 = function(mustSavePreferencesToServer) {
-    var i = null;
-    
     //add in the armory and watch only addresses
+    var additionalBTCAddresses = [], i = null;
     for(i=0; i < PREFERENCES['armory_offline_addresses'].length; i++) {
-      WALLET.addAddress('armory',
-        PREFERENCES['armory_offline_addresses'][i]['address'],
-        PREFERENCES['armory_offline_addresses'][i]['pubkey_hex']);
+      try {
+        WALLET.addAddress('armory',
+          PREFERENCES['armory_offline_addresses'][i]['address'],
+          PREFERENCES['armory_offline_addresses'][i]['pubkey_hex']);
+        additionalBTCAddresses.push(PREFERENCES['armory_offline_addresses'][i]['address']);
+      } catch(e) {
+        $.jqlog.error("Could not generate armory address: " + e);
+      }
     }
     for(i=0; i < PREFERENCES['watch_only_addresses'].length; i++) {
-      WALLET.addAddress('watch', PREFERENCES['watch_only_addresses'][i]);
+      try {
+        WALLET.addAddress('watch', PREFERENCES['watch_only_addresses'][i]);
+        additionalBTCAddresses.push(PREFERENCES['watch_only_addresses'][i]);
+      } catch(e) {
+        $.jqlog.error("Could not generate watch only address: " + e);
+      }
     }
-    /* hide the login div and show the other divs */
-    $('#logon').hide();
-    $('#header').show();
-    $('#left-panel').show();
-    $('#main').show();
     
     //store the preferences on the server(s) for future use
     if(mustSavePreferencesToServer) {
@@ -336,16 +374,16 @@ function LogonViewModel() {
     }
     
     //Update the wallet balances (isAtLogon = true)
-    self.updateBalances(self.openWalletPt4);
-    
-    trackEvent("Login", "Wallet", "Size", PREFERENCES['num_addresses_used']);
-    trackEvent("Login", "Network", USE_TESTNET ? "Testnet" : "Mainnet");
-    trackEvent("Login", "Country", USER_COUNTRY || 'UNKNOWN');
-    trackEvent("Login", "Language", PREFERENCES['selected_lang']);
-    trackEvent("Login", "Theme", PREFERENCES['selected_theme']);
+    self.updateBalances(additionalBTCAddresses, self.openWalletPt4);
   }
     
   self.openWalletPt4 = function() {
+    /* hide the login div and show the other divs */
+    $('#logon').hide();
+    $('#header').show();
+    $('#left-panel').show();
+    $('#main').show();
+
     PENDING_ACTION_FEED.restoreFromLocalStorage(function() {
       //load the waiting btc feed after the pending action feed is all done loading, as we look at the pending action
       // feed to determine whether a btcpay process is in progress (pending) or not
@@ -353,8 +391,14 @@ function LogonViewModel() {
     });
     MESSAGE_FEED.restoreOrder();
     MESSAGE_FEED.resolvePendingRpsMatches();
-    
 
+    //record some metrics...
+    trackEvent("Login", "Wallet", "Size", PREFERENCES['num_addresses_used']);
+    trackEvent("Login", "Network", USE_TESTNET ? "Testnet" : "Mainnet");
+    trackEvent("Login", "Country", USER_COUNTRY || 'UNKNOWN');
+    trackEvent("Login", "Language", PREFERENCES['selected_lang']);
+    trackEvent("Login", "Theme", PREFERENCES['selected_theme']);
+    
     //all done. load the balances screen
     $.jqlog.debug("Login complete. Directing to balances page...");
     window.location.hash = 'pages/balances.html';
@@ -370,9 +414,7 @@ function LicenseModalViewModel() {
     self.shown(true);
     
     //Load in the license file text into the textarea
-    $.get( "pages/license.html", function( data ) {
-      $("#licenseAgreementText").val(data);
-    });
+    $("#licenseAgreementText").val(i18n.t('license'));
   }
 
   self.hide = function() {
@@ -478,7 +520,7 @@ function LogonPasswordModalViewModel() {
     $('#logonPassphaseModal input').keyboard({
       display: {
         'bksp'   :  "\u2190",
-        'accept' : 'Accept',
+        'accept' : i18n.t('accept'),
       },
       layout: 'custom',
       customLayout: {
