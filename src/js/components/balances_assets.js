@@ -45,6 +45,7 @@ ko.validation.rules['isValidAssetDescription'] = {
 };
 ko.validation.registerExtenders();
 
+
 function CreateAssetModalViewModel() {
   var self = this;
   self.shown = ko.observable(false);
@@ -885,5 +886,92 @@ function ShowAssetInfoModalViewModel() {
   }  
 }
 
+function CreateDocumentModalViewModel() {
+  var self = this;
+
+  self.shown = ko.observable(false);
+  self.documentHash = ko.observable("").extend({required: true});
+  self.documentDescription = ko.observable("").extend({required: false});
+  self.address = ko.observable('');
+
+  self.validationModel = ko.validatedObservable({
+    documentHash: self.documentHash,
+    documentDescription: self.documentDescription,
+  });
+
+  self.resetForm = function() {
+    self.address("");
+    self.documentHash("");
+    self.documentDescription("");
+    self.validationModel.errors.showAllMessages(false);
+  }
+
+  self.show = function(address) {
+    self.resetForm();
+    self.address(address);
+    self.shown(true);
+  }
+  self.hide = function() {
+    self.shown(false);
+  }
+
+  self.doAction = function(){
+    options = { source: self.address(),
+         description: self.documentDescription(),
+         hash_string: self.documentHash(),
+         hash_type: 0
+     }
+    WALLET.doTransaction(self.address(), "create_notary", options,
+       function(txHash, data, endpoint, addressType, armoryUTx) {
+         var message = "Your document with hash <b class='notoAssetColor'>" + self.documentHash() + "</b> "
+         + (armoryUTx ? "will be created" : "has been created") + ".<br/><br/>"
+         + "It will automatically appear under the appropriate address once the network"
+         + " has confirmed it.";
+         WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
+         self.resetForm();
+       }
+    );
+    self.shown(false);
+  }
+
+  self.doHash = function(f,event){
+    var f = event.target.files[0];
+
+    handleFileSelect(f);
+
+    var progress = function(p) {
+      var w = ((p*100).toFixed(0));
+    }
+
+    var  finished = function(result) {
+      self.documentHash(result.toString(CryptoJSH.enc.Hex))
+    }
+
+    function handleFileSelect(f) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        setTimeout(function() {
+          var a = CryptoJSH.SHA256(data,progress,finished);
+        }, 200);
+      };
+      reader.onprogress = function(evt) {
+        if (evt.lengthComputable) {
+          var w = (((evt.loaded / evt.total)*100).toFixed(2));
+        }
+      }
+      reader.readAsBinaryString(f);
+    }
+  }
+  self.submitForm = function() {
+    if (!self.validationModel.isValid()) {
+      self.validationModel.errors.showAllMessages();
+      return false;
+    }
+
+    //data entry is valid...submit to the server
+    $('#createDocumentModal form').submit();
+  }
+}
 /*NOTE: Any code here is only triggered the first time the page is visited. Put JS that needs to run on the
   first load and subsequent ajax page switches in the .html <script> tag*/

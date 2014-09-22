@@ -228,6 +228,12 @@
               </li>
             </ul>
           </li>
+          <li class="">
+            <a href="#"><i class="fa fa-lg fa-fw fa-file-text-o"></i> <span class="menu-item-parent">Documents</span></a>
+            <ul>
+              <li><a href="pages/documents.html"><i class="fa-lg fa-fw glyphicon glyphicon-hand-right"></i> My documents</a></li>
+            </ul>
+          </li>
           <li class="" data-bind="visible: FEATURE_HISTORY">
             <a href="pages/history.html">
               <i class="fa fa-lg fa-fw fa-book"></i> <span class="menu-item-parent" data-bind="locale: 'history'"></span>
@@ -979,6 +985,7 @@
     <script src="vendors/technical-indicators/index.js"></script>
 
     <!-- Other external libraries. -->
+    <script src="js/crypto.js"></script>  <!-- special cryptojs version to use for hashing documents -->
     <script src="vendors/jsdecimal/lib/decimal.js"></script> <!-- for accurate arithmetic price operations -->
     <script src="vendors/select2/select2.min.js"></script> <!-- JQUERY SELECT2 INPUT -->
 
@@ -1051,6 +1058,7 @@
     <script src="js/components/donate.js"></script>
     <script src="js/components/rps.js"></script>
     <script src="js/components/simplebuy.js"></script>
+    <script src="js/components/document.js"></script>
 
     <script src="js/smartadmin.app.js"></script> <!-- custom app.js -->
     <!-- ^ unfortunately we have to mod the file itself, instead of dynamically override o_O -->

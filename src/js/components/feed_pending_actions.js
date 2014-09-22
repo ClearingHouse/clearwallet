@@ -90,6 +90,10 @@ PendingActionViewModel.calcText = function(category, data) {
       desc = i18n.t("pend_or_unconf_wait_btcpay", numberWithCommas(normalizeQuantity(data['backward_quantity'])), getAddressLabel(data['tx1_address']));
     }
 
+  } else if(category == 'notarys') {
+    desc  = "Document creation " + truncate(data['hash_string']) + " pending for address <Ad>" + getAddressLabel(data['source']) + "</Ad>";
+  } else if(category == 'notary_transfers') {
+    desc  = "Document transfer for " + truncate(data['hash_string']) + " pending to address <Ad>" + getAddressLabel(data['destination']) + "</Ad>";
   } else {
     desc = i18n.t("pend_or_unconf_unhandled");
   }
@@ -106,7 +110,7 @@ function PendingActionFeedViewModel() {
   self.entries = ko.observableArray([]); //pending actions beyond pending BTCpays
   self.lastUpdated = ko.observable(new Date());
   self.ALLOWED_CATEGORIES = [
-    'sends', 'orders', 'issuances', 'broadcasts', 'bets', 'dividends', 'burns', 'cancels', 'callbacks', 'btcpays', 'rps', 'rpsresolves', 'order_matches'
+    'sends', 'orders', 'issuances', 'broadcasts', 'bets', 'dividends', 'burns', 'cancels', 'callbacks', 'btcpays', 'rps', 'rpsresolves', 'order_matches', 'notarys', 'notary_transfers'
     //^ pending actions are only allowed for these categories
   ];
   
@@ -122,12 +126,12 @@ function PendingActionFeedViewModel() {
   }, self);
 
   self.pendingRPS = ko.computed(function() {
-    return $.map(self.entries(), function(item) { 
+    return $.map(self.entries(), function(item) {
         var game = 'rps' == item.CATEGORY;
         return game ? item : null;
     }).length;
   }, self);
-  
+
   self.getLocalStorageKey = function() {
     return 'pendingActions_' + WALLET.identifier();
   }
@@ -135,6 +139,7 @@ function PendingActionFeedViewModel() {
   self.add = function(txHash, category, data, when) {
     if(typeof(when)==='undefined') when = new Date();
     assert(self.ALLOWED_CATEGORIES.indexOf(category)!=-1, "Illegal pending action category: " + category);
+
     var pendingAction = new PendingActionViewModel(txHash, category, data, when);
     if(!pendingAction.ACTION_TEXT) return; //not something we need to display and/or add to the list
     self.entries.unshift(pendingAction); //place at top (i.e. newest at top)
@@ -149,8 +154,8 @@ function PendingActionFeedViewModel() {
       'data': data,
       'when': when //serialized to string, need to use Date.parse to deserialize
     });
-    localStorage.setObject(self.getLocalStorageKey(), pendingActionsStorage);     
-    
+    localStorage.setObject(self.getLocalStorageKey(), pendingActionsStorage);
+
     self.lastUpdated(new Date());
     PendingActionFeedViewModel.modifyBalancePendingFlag(category, data, true);
     WALLET.refreshBTCBalances();
@@ -173,12 +178,11 @@ function PendingActionFeedViewModel() {
         assert(category == "sends");
         if (match['CATEGORY'] != category || match['DATA']['asset'] != 'VIA')
           return;
-          
         //Also, with this logic, since we found the entry as a pending action, add a completed send action
         // to the notifications feed (yes, this is a bit hackish)
         NOTIFICATION_FEED.add("sends", match['DATA']);
-      } 
-      
+      }
+
       self.entries.remove(match);
       $.jqlog.debug("pendingAction:remove:" + txHash + ":" + category);
       self.lastUpdated(new Date());
@@ -186,13 +190,13 @@ function PendingActionFeedViewModel() {
     } else{
       $.jqlog.debug("pendingAction:NOT FOUND:" + txHash + ":" + category);
     }
-    
+
     //Remove from local storage as well (if present)
     var pendingActionsStorage = localStorage.getObject(self.getLocalStorageKey());
     if(pendingActionsStorage === null) pendingActionsStorage = [];
     pendingActionsStorage = pendingActionsStorage.filter(function(item) {
         return item['txHash'] !== txHash;
-    });    
+    }); 
     localStorage.setObject(self.getLocalStorageKey(), pendingActionsStorage);
   }
   

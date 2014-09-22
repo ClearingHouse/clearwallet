@@ -170,7 +170,18 @@ NotificationViewModel.calcText = function(category, message) {
       desc = i18n.t("notif_rps_match_expired", getAddressLabel(message['tx1_address']), getAddressLabel(message['tx0_address']));
     }
 
-  } else if(category == "rps_matches") {
+  }else if(category == "documents") {
+    if(message['_command'] == "update"){
+      var addresses = WALLET.getAddressesList();
+      if(addresses.indexOf(message['owner']) !=-1) {
+        desc = "A document with hash " + truncate(message['hash_string']) + " has been transferred to your address " + getAddressLabel(message['owner']) + "."
+      }else{
+        desc = "Your document with hash " + truncate(message['hash_string']) + " has been transferred to " + getAddressLabel(message['owner']) + "."
+      }
+    }else{
+      desc = "Your document with hash " + truncate(message['hash_string']) + "..." + " has been created."
+    }
+  }else if(category == "rps_matches") {
 
     if (!message['tx0_address']) {
 
@@ -184,13 +195,13 @@ NotificationViewModel.calcText = function(category, message) {
         for (var i in data) {
           var rps_match = data[i];
           NOTIFICATION_FEED.add(category, rps_match);
-        }        
+        }
       }
 
       failoverAPI('get_rps_matches', params, onReceiveRpsMatch);
 
-    } else {
-        
+    }
+    else {
         if (WALLET.getAddressObj(message['tx0_address'])) {
           if  (message['status'] == "concluded: first player wins") {
             desc = i18n.t("notif_rps_win", smartFormat(normalizeQuantity(message['wager'])), getAddressLabel(message['tx0_address']));
@@ -226,9 +237,7 @@ NotificationViewModel.calcText = function(category, message) {
         } else if (desc) {
           NOTIFIED_RPS_RESULT[desc] = true;
         }
-      
     }
-
   }
 
   if(desc) {
