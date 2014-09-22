@@ -830,7 +830,7 @@
   "create_notary": "Create a notary Document",
 
 	"top_tokens": "Top Tokens",
-	"market_cap_history": "Market Cap History (in %s)",
+  "market_cap_history": "Market Cap History (in %s)",
 	"leader_board_in": "Leaderboard (in %s)",
 	"total_supply": "Total Supply",
 	"volume_24h": "Volume (24h)",
