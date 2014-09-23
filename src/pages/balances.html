@@ -52,8 +52,8 @@
 <div class="alert alert-info" id="alertBuyXcp">
     <!--
     <i class="fa-fw fa fa-exchange"></i>
-    <span data-bind="locale: 'want_to_buy_xcp'"></span>
-    <a href="http://clearinghouse.io/xch/" target="_blank" data-bind="locale: 'want_to_buy_listed_here'"></a>.
+    <span data-bind="visible: !QUICK_BUY_ENABLE, locale: 'want_to_buy_xcp'"></span>
+    <span data-bind="visible: QUICK_BUY_ENABLE, locale: 'want_to_buy_xcp_with_quick_buy'"></span>
     -->
 </div>
 
