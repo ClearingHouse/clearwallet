@@ -141,10 +141,13 @@ function WalletViewModel() {
       if (asset == 'VIA' && unconfirmedRawBal) {
         assetObj.unconfirmedBalance(normalizeQuantity(unconfirmedRawBal));
         assetObj.balanceChangePending(true);
+        addressObj.addOrUpdateAsset(asset, {}, rawBalance);
       } else if (asset == 'VIA') {
         assetObj.unconfirmedBalance(0);
         assetObj.balanceChangePending(false);
+        addressObj.addOrUpdateAsset(asset, {}, rawBalance);
       }
+
     }
     return true;
   }
@@ -281,9 +284,14 @@ function WalletViewModel() {
       function(balancesData, endpoint) {
         $.jqlog.debug("Got initial balances: " + JSON.stringify(balancesData));
         
-        if(!balancesData.length)
+        if(!balancesData.length) {
+          for (var i in addresses) {
+            WALLET.getAddressObj(addresses[i]).addOrUpdateAsset('XCH', {}, 0, 0);
+          }
           if (onSuccess) return onSuccess(); //user has no balance (i.e. first time logging in)
           else return;
+        }
+          
         
         var i = null, j = null;
         var numBalProcessed = 0;
