@@ -134,8 +134,7 @@
                   <ul class="dropdown-menu" role="menu">
                     <li><a data-bind="visible: !$parent.IS_WATCH_ONLY, click: send, locale: 'send'" href="#"></a></li>
                     <li><a data-bind="visible: ASSET !== 'VIA' && ASSET !== 'XCH', click: showInfo, locale: 'show_info'" href="#"></a></li>
-<!-- todo add && USE_TESTNET after burn completes -->
-                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && ASSET === 'VIA'"><a data-bind="click: testnetBurn, locale: 'burn_for_xcp'" href="#"></a></li>
+                    <li data-bind="visible: !$parent.IS_WATCH_ONLY && USE_TESTNET && ASSET === 'VIA'"><a data-bind="click: testnetBurn, locale: 'burn_for_xcp'" href="#"></a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: issueAdditional, locale: 'issue_additional'" href="#"></a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine()"><a data-bind="click: transfer, locale: 'transfer_ownership'" href="#"></a></li>
                     <li data-bind="visible: !$parent.IS_WATCH_ONLY && isMine() && !locked()"><a data-bind="click: lock, locale: 'lock_token_issuance'" href="#"></a></li>
