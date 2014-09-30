@@ -171,15 +171,14 @@ NotificationViewModel.calcText = function(category, message) {
     }
 
   }else if(category == "documents") {
-    if(message['_command'] == "update"){
-      var addresses = WALLET.getAddressesList();
-      if(addresses.indexOf(message['owner']) !=-1) {
+    var addresses = WALLET.getAddressesList();
+
+    if(addresses.indexOf(message['owner']) != -1) {
+      if(message['_command'] == "update"){
         desc = "A document with hash " + truncate(message['hash_string']) + " has been transferred to your address " + getAddressLabel(message['owner']) + "."
       }else{
-        desc = "Your document with hash " + truncate(message['hash_string']) + " has been transferred to " + getAddressLabel(message['owner']) + "."
+        desc = "Your document with hash " + truncate(message['hash_string']) + "..." + " has been created."
       }
-    }else{
-      desc = "Your document with hash " + truncate(message['hash_string']) + "..." + " has been created."
     }
   }else if(category == "rps_matches") {
 
