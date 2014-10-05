@@ -63,7 +63,7 @@
     "src/vendors/counterwebdeps/js/util.generic.js": "f280bba9f87b6ec49d5cf0146e6c04735ae1054f5f8942aac87fdc46094ee944",
     "src/vendors/counterwebdeps/js/util.analytics.js": "e2ae8dd7b29ab24b2b5265b139bd558a90b470eb639a6bd7ad1ffd29c4826a53",
     "src/vendors/counterwebdeps/js/util.bitcore.js": "83c21e138c090bb924b87d73f3d6c619105cd539a490a0782e160930d713c2bc",
-    "src/vendors/counterwebdeps/js/util.api.js": "bbf5fe64ffd28e61c4dfcae93a01d058a57f3295b43424d41a374390c318860c",
+    "src/vendors/counterwebdeps/js/util.api.js": "adf01d6cbb6a0462e1a84d7581e4bba103782783c75bd548d47085fbf9b4278a",
     "src/vendors/counterwebdeps/js/util.bitcoin.js": "2feee23f710a3f5d7f09c2197d7e194f46c421c4f0cb28b5305151d7ec800305",
     "src/vendors/counterwebdeps/js/util.knockout.js": "2f4c13781ca822c3906f145453f10ed6d36b0d1a7c7b09e326045f86c2202c42"
 }
