@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-6">
       <h1 class="page-title txt-color-blueDark">
-        My Documents
+        My Documents <button type="button" class="btn btn-primary" data-bind="click: verifyDocument">Verify Notary</button>
       </h1>
     </div>
   </div>
@@ -128,3 +128,46 @@
     </div>
   </div>
 </div>
+
+<!-- modal for issuing document for notary -->
+<div data-bind="showModal: shown" id="verifyDocumentModal" class="modal fade" data-backdrop="static" data-keyboard="false" role="dialog" aria-labelledby="verifyDocumentModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Verify a notary Document</h4>
+      </div><!-- end header -->
+
+      <div class="modal-body">
+        <form class="smart-form" action="" data-bind="submit: doAction">
+          <section>
+          <div class="row">
+            <label class="control-label col col-sm-2">Document</label>
+            <div class="col col-sm-10">
+              <label class="input"><i class="icon-append fa fa-file-o">&nbsp;</i>
+                <input name="documentFile" data-bind="event: { change: doHash}" type="file"/>
+              </label>
+              <div class="note">The hash will be calculated automatically and client-side.</div>
+            </div>
+          </div>
+          </section>
+          <section>
+          <div class="row">
+            <label class="control-label col col-sm-2">Document hash</label>
+            <div class="col col-sm-10">
+              <label class="input"><i class="icon-append fa fa-key">&nbsp;</i>
+                <input id="documentHash" name="documentHash" data-bind="value: documentHash" type="input" disabled=disabled/>
+              </label>
+            </div>
+          </div>
+          </section>
+        </form>
+      </div><!-- close modal-body -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
+        <button type="button" data-bind="click: submitForm" class="btn btn-primary">Verify Document</button>
+      </div>
+    </div>
+  </div>
+</div>
+
