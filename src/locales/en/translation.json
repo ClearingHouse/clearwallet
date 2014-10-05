@@ -825,6 +825,7 @@
   "order_already_cancelled": "Order already cancelled",
 
   "create_notary": "Create a notary Document",
+  "is_invalid_sha2_hash": "Invalid hash value",
 
   "top_tokens": "Top Tokens",
   "market_cap_history": "Market Cap History (in %s)",

@@ -128,14 +128,22 @@ function VerifyDocumentModal() {
   var self = this;
 
   self.shown = ko.observable(false);
-  self.documentHash = ko.observable("").extend({required: true});
+  self.documentHash = ko.observable("")
+    .extend({required: true})
+    .extend({pattern: {
+      params: '^[0-9A-Fa-f]{64}$',
+      message: i18n.t('is_invalid_sha2_hash')
+    }});
+  self.documentFile = ko.observable("");
 
   self.validationModel = ko.validatedObservable({
-    documentHash: self.documentHash
+    documentHash: self.documentHash,
+    documentFile: self.documentFile
   });
 
   self.resetForm = function() {
     self.documentHash("");
+    self.documentFile("");
     self.validationModel.errors.showAllMessages(false);
   }
 

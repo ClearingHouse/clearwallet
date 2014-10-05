@@ -145,7 +145,7 @@
             <label class="control-label col col-sm-2">Document</label>
             <div class="col col-sm-10">
               <label class="input"><i class="icon-append fa fa-file-o">&nbsp;</i>
-                <input name="documentFile" data-bind="event: { change: doHash}" type="file"/>
+                <input name="documentFile" data-bind="event: { change: doHash}, value: documentFile" type="file"/>
               </label>
               <div class="note">The hash will be calculated automatically and client-side.</div>
             </div>
@@ -156,7 +156,7 @@
             <label class="control-label col col-sm-2">Document hash</label>
             <div class="col col-sm-10">
               <label class="input"><i class="icon-append fa fa-key">&nbsp;</i>
-                <input id="documentHash" name="documentHash" data-bind="value: documentHash" type="input" disabled=disabled/>
+                <input id="documentHash" name="documentHash" data-bind="value: documentHash" type="input"/>
               </label>
             </div>
           </div>
