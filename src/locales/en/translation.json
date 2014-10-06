@@ -831,7 +831,7 @@
   "create_notary": "Create a Notary Document",
   "notary_created_dialog": "Your document with hash <Ad>%s</Ad> will be created",
   "notary_will_auto_confirm": "It will automatically appear under the appropriate address once the network has confirmed it.",
-  "create_notary_transfer": "Your document with hash <Ad>%s...</Ad> will be transferred to %s.",
+  "notary_transfer_message": "Your document with hash <Ad>%s...</Ad> is being transferred to %s.",
   "is_invalid_sha2_hash": "Invalid hash value",
   "notary_not_found_header": "Notary not found",
   "notary_does_not_exist_header": "Document with hash <Ad>%s</Ad> does <b>NOT</b> exist!",
