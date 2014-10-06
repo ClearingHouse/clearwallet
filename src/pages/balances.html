@@ -502,7 +502,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Create a notary Document</h4>
+        <h4 class="modal-title" data-bind="locale: 'notary_create_doc_title'"></h4>
       </div><!-- end header -->
 
       <div class="modal-body">
@@ -513,23 +513,23 @@
                 <label class="input"><i class="icon-append fa fa-user">&nbsp;</i>
                     <input name="assetAddress" data-bind="value: address" type="text" disabled="disabled"/>
                 </label>
-                <div class="note">The address the document will be created on.</div>
+                <div class="note"><span data-bind="locale: 'notary_address_doc_create'"></span></div>
             </div>
           </div></section>
           <section>
           <div class="row">
-            <label class="control-label col col-sm-2">Document</label>
+            <label class="control-label col col-sm-2"><span data-bind="locale: 'notary_document_label'"></span></label>
             <div class="col col-sm-10">
               <label class="input"><i class="icon-append fa fa-file-o">&nbsp;</i>
                 <input name="documentFile" data-bind="event: { change: doHash}" type="file"/>
               </label>
-              <div class="note">The hash will be calculated automatically and client-side.</div>
+              <div class="note"><span data-bind="locale: 'notary_hash_calc_clientside'"></span></div>
             </div>
           </div>
           </section>
           <section>
           <div class="row">
-            <label class="control-label col col-sm-2">Document hash</label>
+            <label class="control-label col col-sm-2"><span data-bind="locale: 'notary_document_hash'"></span></label>
             <div class="col col-sm-10">
               <label class="input"><i class="icon-append fa fa-key">&nbsp;</i>
                 <input id="documentHash" name="documentHash" data-bind="value: documentHash" type="input" disabled=disabled/>
@@ -544,15 +544,15 @@
               <label class="input"><i class="icon-append fa fa-info">&nbsp;</i>
                 <input name="documentDescription" data-bind="value: documentDescription" type="text"/>
               </label>
-              <div class="note">Optional (public) description for this document.</div>
+              <div class="note"><span data-bind="locale: 'notary_optional_description'"></span></div>
             </div>
           </div>
           </section>
         </form>
       </div><!-- close modal-body -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-bind="click: hide">Cancel</button>
-        <button type="button" data-bind="click: submitForm" class="btn btn-primary">Create Document</button>
+        <button type="button" class="btn btn-default" data-bind="click: hide"><span data-bind="locale: 'notary_cancel'"></span></button>
+        <button type="button" data-bind="click: submitForm" class="btn btn-primary"><span data-bind="locale: 'notary_create_notary'"></span></button>
       </div>
     </div>
   </div>

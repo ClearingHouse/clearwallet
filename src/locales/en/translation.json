@@ -842,6 +842,7 @@
   "notary_my_documents": "My Documents",
   "notary_verify_notary": "Verify Notary",
   "notary_owner": "Owner",
+  "notary_current_owner": "Current owner",
   "notary_action": "Action",
   "notary_transfer_ownership": "Transfer ownership",
   "notary_transactions": "Transactions",
@@ -856,6 +857,12 @@
   "notary_hash_calc_clientside": "The hash will be calculated automatically and client-side.",
   "notary_cancel": "Cancel",
   "notary_verify_document": "Verify Document",
+  "notary_create_doc_title": "Create a Notary Document",
+  "notary_create_notary": "Create Notary",
+  "notary_address_doc_create": "The address the document will be created on.",
+  "notary_document_label": "Document",
+  "notary_optional_description": "Optional (public) description for this document.",
+
 
   "top_tokens": "Top Tokens",
   "market_cap_history": "Market Cap History (in %s)",
