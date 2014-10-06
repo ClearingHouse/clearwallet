@@ -104,7 +104,8 @@ function DocumentTransferModal() {
 
     WALLET.doTransaction(self.source(), "create_notary_transfer", options,
                          function(txHash, data, endpoint, addressType, armoryUTx) {
-                           var message = "Your document with hash <b class='notoAssetColor'>" + self.documentHash().substring(0,16)+"..." + " </b>will be transferred to " + self.destination() + "."
+                           var message = i18n.t("notary_transfer_message", self.documentHash().substring(0,16), self.destination());
+                           message = message.replace(/<Ad>/g, '<b class="notoAssetColor">').replace(/<\/Ad>/g, '</b>');
                            WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
                            self.resetForm();
                          }
@@ -158,20 +159,23 @@ function VerifyDocumentModal() {
   self.showResult = function(data, endpoint) {
     var msg = "";
     if (!data.length || !data[0].tx_hash) {
-        msg = "<h1>Document not found</h1><br/>Document with hash <b class='notoAssetColor'>" + self.documentHash() + " </b> is <b>NOT</b> known";
+        msg = "<h1>" + i18n.t("notary_not_found_header") + "</h1><br />" + i18n.t("notary_does_not_exist_header", self.documenthash());
     } else {
-        msg = "<h1>Document is found</h1><br/>" +
-              "Document hash: <b class='notoAssetColor'>" + data[0].hash_string + "</b><br/>" +
-              "Description: <b class='notoAssetColor'>" + data[0].description + "</b><br/>" +
-              "Owned by: <b class='notoAssetColor'>" + data[0].owner + "</b>";
+        msg = "<h1>" + i18n.t("notary_found_header") + "</h1><br />" +
+              i18n.t("notary_description") + ": <b class='notoAssetColor'>" + data[0].description + "</b><br/>" +
+              i18n.t("notary_document_hash") + ": <b class='notoAssetColor'>" + data[0].hash_string + "</b><br/>" +
+              i18n.t("notary_owned_by") + ": <b class='notoAssetColor'>" + data[0].owner + "</b>";
     }
+
+    msg = msg.replace(/<Ad>/g, '<b class="notoAssetColor">').replace(/<\/Ad>/g, '</b>');
+
     bootbox.alert({message: msg});
   }
 
   self.doAction = function(){
     options = { hash_string: self.documentHash(),
                 hash_type: 0
-     }
+    }
     failoverAPI('get_document_for_hash', options, self.showResult);
     self.shown(false);
   }

@@ -927,10 +927,9 @@ function CreateDocumentModalViewModel() {
      }
     WALLET.doTransaction(self.address(), "create_notary", options,
        function(txHash, data, endpoint, addressType, armoryUTx) {
-         var message = "Your document with hash <b class='notoAssetColor'>" + self.documentHash() + "</b> "
-         + (armoryUTx ? "will be created" : "has been created") + ".<br/><br/>"
-         + "It will automatically appear under the appropriate address once the network"
-         + " has confirmed it.";
+         var message = i18n.t("notary_created_dialog", self.documentHash()) + "<br/><br/>";
+         message = message + i18n.t("notary_will_auto_confirm");
+         message = message.replace(/<Ad>/g, '<b class="notoAssetColor">').replace(/<\/Ad>/g, '</b>');
          WALLET.showTransactionCompleteDialog(message + ACTION_PENDING_NOTICE, message, armoryUTx);
          self.resetForm();
        }
