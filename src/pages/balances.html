@@ -114,7 +114,7 @@
                   <li class="divider"></li><li class="dropdown-header" data-bind="locale: 'issuance'"></li>
                   <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: createAsset, locale: 'create_a_token'" href="#"></a></li>
                   <li data-bind="visible: !IS_WATCH_ONLY && FEATURE_DIVIDEND"><a data-bind="click: payDividend, locale: 'pay_distribution'" href="#"></a></li>
-                  <li data-bind="visible: !IS_WATCH_ONLY && USE_TESTNET"><a data-bind="click: createDocument, locale: 'create_notary'" href="#"></a></li>
+                  <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: createDocument, locale: 'create_notary'" href="#"></a></li>
                   <li class="divider"></li><li class="dropdown-header" data-bind="locale: 'betting'"></li>
                   <li data-bind="visible: !IS_WATCH_ONLY"><a data-bind="click: broadcast, locale: 'feed_broadcast'" href="#"></a></li>
                 </ul>
@@ -539,7 +539,7 @@
           </section>
           <section>
           <div class="row">
-            <label class="control-label col col-sm-2">Description</label>
+            <label class="control-label col col-sm-2"><span data-bind="locale: 'notary_description'"></span></label>
             <div class="col col-sm-10">
               <label class="input"><i class="icon-append fa fa-info">&nbsp;</i>
                 <input name="documentDescription" data-bind="value: documentDescription" type="text"/>
