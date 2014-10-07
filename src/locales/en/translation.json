@@ -38,7 +38,8 @@
   "testnet_in_use": "Testnet In Use",
   "open_wallet": "Open Wallet",
   "login": "Login",
-  "counterwallet_desc_1": "Clearwallet is a web-wallet for <a href=\"http://clearinghouse.io\" target=\"_blank\">ClearingHouse</a>, the world’s first protocol for decentralized financial tools.",
+  "login_problems": "Problems logging in?",
+  "counterwallet_desc_1": "Clearwallet is a free web-wallet for <a href=\"http://clearinghouse.io\" target=\"_blank\">ClearingHouse</a>, a protocol for decentralized financial tools.",
   "counterwallet_desc_2": "All transactions made with Clearwallet use an automatic escrow system to keep them secure, with no middleman required.",
   "counterwallet_desc_3": "Secure",
   "counterwallet_desc_4": "All encryption is handled client-side. Neither your passphrase nor any of your private information ever leaves your browser.",
@@ -139,6 +140,8 @@
   "answer_10": "Where can I buy XCH?",
   "answer_11": "I placed an order to buy VIA for something else. What I offered was removed from my account, but I don't see the VIA yet!",
   "answer_12": "Why does it cost me a little Viacoin to cancel an order!?",
+  "answer_13": "What is the difference between 'miner's fee' and 'redeemable fee'?",
+  "answer_14": "What VIA sellers on the ClearingHouse Distributed Exchange need to know?",
   "for_other_questions": "For other questions, please ask in",
   "counterparty_forums": "the ClearingHouse support forums",
   "for_bugs": "For bugs, you may",
@@ -896,5 +899,7 @@
   "portfolio_overview": "Portfolio Overview",
   "portfolio_composition": "Portfolio Composition (in %s)",
   "only_the_assets_you_own": "Only the assets you own with established market value (via completed trades on the Distributed Exchange) are listed here.",
-  "highest_bid_price": "Highest bid price"
+  "highest_bid_price": "Highest bid price",
+
+  "diligence_is_advised": "Because of the fully peer-to-peer nature of the exchange, due diligence is advised. Please ensure that the assets you are trading are legitimate and official. Terms of Use for ClearingHouse.io and Clearwallet.io can be found at <a href=\"http://clearinghouse.io\">http://clearinghouse.io</a>."
 }
