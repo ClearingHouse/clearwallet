@@ -68,7 +68,25 @@ function DocumentTransferModal() {
   self.shown = ko.observable(false);
   self.documentHash = ko.observable("").extend({required: true});
   self.source = ko.observable("").extend({required: true});
-  self.destination = ko.observable("").extend({required: true});
+  self.destination = ko.observable("").extend({required: true})
+    .extend({
+      validation: {
+        validator: function(val, src) {
+          return val != src();
+        },
+        message: i18n.t("notary_transfer_to_self"),
+        params: self.source
+      }
+    })
+    .extend({
+      validation: {
+        validator: function(val) {
+          var bitcore = require('bitcore');
+          return bitcore.Address.validate(val);
+        },
+        message: i18n.t("is_invalid_via_address")
+      }
+    });
 
   self.validationModel = ko.validatedObservable({
     documentHash: self.documentHash,

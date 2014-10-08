@@ -836,6 +836,8 @@
   "notary_will_auto_confirm": "It will automatically appear under the appropriate address once the network has confirmed it.",
   "notary_transfer_message": "Your document with hash <Ad>%s...</Ad> is being transferred to %s.",
   "is_invalid_sha2_hash": "Invalid hash value",
+  "is_invalid_via_address": "Invalid VIA address",
+  "notary_transfer_to_self": "Transfer to self not supported",
   "notary_not_found_header": "Notary not found",
   "notary_does_not_exist_header": "Document with hash <Ad>%s</Ad> does <b>NOT</b> exist!",
   "notary_found_header": "Notary found",
