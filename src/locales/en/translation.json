@@ -43,7 +43,7 @@
   "counterwallet_desc_2": "All transactions made with Clearwallet use an automatic escrow system to keep them secure, with no middleman required.",
   "counterwallet_desc_3": "Secure",
   "counterwallet_desc_4": "All encryption is handled client-side. Neither your passphrase nor any of your private information ever leaves your browser.",
-  "counterwallet_desc_5": "Clearwallet passhrases are highly secure, so you know that your wallet is safe from all brute force attacks. They are also easy to learn and hard to mistype.",
+  "counterwallet_desc_5": "Clearwallet passphrases are highly secure, so you know that your wallet is safe from all brute force attacks. They are also easy to learn and hard to mistype.",
   "counterwallet_desc_6": "Simple",
   "counterwallet_desc_7": "With Clearwallet, your passphrase is your wallet, and all of your addresses and keys are generated on-the-fly when you log in.",
   "counterwallet_desc_8": "There are no wallet files to backup or keep private, and with your passphrase you can access your wallet from any trusted machine with a web browser.",
@@ -830,6 +830,8 @@
   "buy_orders": "Buy orders",
   "completed_trades_for": "Completed Trades for %s",
   "order_already_cancelled": "Order already cancelled",
+  "nodivisible_amount_incorrect": "Divisible amount for non-divisible asset.",
+  "nodivisible_total_incorrect": "Divisible total for non-divisible asset.",
 
   "create_notary": "Create a Notary Document",
   "notary_created_dialog": "Your document with hash <Ad>%s</Ad> will be created",
@@ -903,5 +905,15 @@
   "only_the_assets_you_own": "Only the assets you own with established market value (via completed trades on the Distributed Exchange) are listed here.",
   "highest_bid_price": "Highest bid price",
 
-  "diligence_is_advised": "Because of the fully peer-to-peer nature of the exchange, due diligence is advised. Please ensure that the assets you are trading are legitimate and official. Terms of Use for clearinghouse.io and clearwallet.io can be found at <a href=\"http://clearinghouse.io\" target=\"_blank\">http://clearinghouse.io</a>."
+  "diligence_is_advised": "Because of the fully peer-to-peer nature of the exchange, due diligence is advised. Please ensure that the assets you are trading are legitimate and official. Terms of Use for Clearinghouse.io and Clearwallet.io can be found at <a href=\"http://clearinghouse.io\" target=\"_blank\">http://clearinghouse.io</a>.",
+
+  "must_be_valid_testnet_address": "This field must be a valid TESTNET viacoin address.",
+  "must_be_valid_bitcoin_address": "This field must be a valid viacoin address.",
+  "must_be_whole_number": "The quantity entered must be a whole number, since this is a non-divisible asset.",
+  "destination_equal_to_source": "Destination address cannot be equal to the source address.",
+  "must_be_quantity": "Must be a valid quantity (positive num with max 8 decimal places)",
+  "must_be_quantity_or_zero": "Must be a valid quantity (num with max 8 decimal places), or zero",
+  "must_be_positive_integer": "Must be a positive integer",
+  "must_be_url": "This field must be a valid url",
+  "must_be_url_or_address": "This field must be a valid url or a valid viacoin address"
 }
