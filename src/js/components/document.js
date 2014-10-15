@@ -177,7 +177,7 @@ function VerifyDocumentModal() {
   self.showResult = function(data, endpoint) {
     var msg = "";
     if (!data.length || !data[0].tx_hash) {
-        msg = "<h1>" + i18n.t("notary_not_found_header") + "</h1><br />" + i18n.t("notary_does_not_exist_header", self.documenthash());
+        msg = "<h1>" + i18n.t("notary_not_found_header") + "</h1><br />" + i18n.t("notary_does_not_exist_header", self.documentHash());
     } else {
         msg = "<h1>" + i18n.t("notary_found_header") + "</h1><br />" +
               i18n.t("notary_description") + ": <b class='notoAssetColor'>" + data[0].description + "</b><br/>" +
