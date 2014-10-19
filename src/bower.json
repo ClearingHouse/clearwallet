@@ -7,7 +7,7 @@
         "underscore.string": "2.3.3",
         "bootstrap": "3.1.1",
         "smartadmin": "https://github.com/ClearingHouse/clearsmartadmin.git#c7049658057b26747833f18085255a795f10b581",
-        "counterwebdeps": "https://github.com/ClearingHouse/clearwebdeps.git#b72c7ae2b7fb34e8a7d720f87b6d682f4fd9c22e",
+        "counterwebdeps": "https://github.com/ClearingHouse/clearwebdeps.git#6f95c36e1e9d6fc0e05a9db0f0e4813309a3cc16",
         "cryptojs": "https://crypto-js.googlecode.com/files/CryptoJS%20v3.1.2.zip",
         "rollbar": "1.1.7",
         "bootbox": "4.2.0",
